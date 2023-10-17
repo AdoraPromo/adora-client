@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 
 /**
  * Zustand Store
@@ -14,6 +14,7 @@ type TGlobalState = {
   setNativeCurrencyPrice: (newNativeCurrencyPriceState: number) => void;
 };
 
+// TODO: Keeping fields so that we don't forget how to set up our own state
 export const useGlobalState = create<TGlobalState>(set => ({
   nativeCurrencyPrice: 0,
   setNativeCurrencyPrice: (newValue: number): void => set(() => ({ nativeCurrencyPrice: newValue })),

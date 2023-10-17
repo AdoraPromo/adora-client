@@ -6,7 +6,7 @@
     "dev": "next dev",
     "start": "next dev",
     "build": "next build",
-    "serve": "next start",
+    "serve": "next start -p 3001",
     "lint": "next lint",
     "format": "prettier --write . '!(node_modules|.next|contracts)/**/*'",
     "check-types": "tsc --noEmit --incremental",

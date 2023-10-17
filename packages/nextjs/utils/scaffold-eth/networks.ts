@@ -26,11 +26,11 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     color: "#48a9a6",
   },
   [chains.polygon.id]: {
-    color: "#2bbdf7",
+    color: "#8247e5",
     nativeCurrencyTokenAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
   },
   [chains.polygonMumbai.id]: {
-    color: "#92D9FA",
+    color: "#8247e5",
     nativeCurrencyTokenAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
   },
   [chains.optimismGoerli.id]: {
@@ -52,8 +52,8 @@ export const NETWORKS_EXTRA_DATA: Record<string, TChainAttributes> = {
     color: "#1969ff",
   },
   [chains.scrollSepolia.id]: {
-    color: '#fbebd4'
-  }
+    color: "#fbebd4",
+  },
 };
 
 /**
