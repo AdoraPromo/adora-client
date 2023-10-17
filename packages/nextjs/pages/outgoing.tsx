@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
@@ -53,6 +54,7 @@ const Outgoing: NextPage = () => {
     },
   ];
 
+  // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
   const [allDeals] = useState(deals);
   const [filteredDeals, setFilteredDeals] = useState(deals);
@@ -63,13 +65,15 @@ const Outgoing: NextPage = () => {
       return;
     }
 
-    setFilteredDeals(allDeals.filter(deal => deal.status === status));
-  }, [status]);
+    setFilteredDeals(allDeals.filter((deal: any) => deal?.status === status));
+  }, [status, allDeals]);
+
+  // TODO: Add different background image than for root
 
   return (
     <div>
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
-      <div className="flex flex-col items-start w-full p-10 text-neutral gap-10">
+      <div className="flex flex-col items-start w-full h-full p-10 text-neutral gap-10">
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
@@ -83,11 +87,22 @@ const Outgoing: NextPage = () => {
               textSize: "lg",
               fontWeight: "bold",
             }}
-            text="Create Offer"
-            onClick={() => notification.info("Create offer")}
+            text="Create Deal"
+            onClick={() => notification.info("Create Deal")}
           />
         </div>
-        <DealGrid deals={filteredDeals} />
+        {filteredDeals.length != 0 && <DealGrid deals={filteredDeals} />}
+        {filteredDeals.length == 0 && (
+          <div className="flex flex-col justify-center items-center w-full gap-10 p-10">
+            <div className="flex flex-col justify-center items-center w-full text-2xl">
+              <div>This Page is Empty.</div>
+              <div>
+                Start with <b>Create Deal</b>!
+              </div>
+            </div>
+            <Image src={"/assets/empty-outgoing.png"} alt="empty-outgoing" width={400} height={400} />
+          </div>
+        )}
       </div>
     </div>
   );

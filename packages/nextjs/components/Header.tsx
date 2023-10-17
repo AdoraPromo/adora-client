@@ -29,8 +29,6 @@ export const HeaderMenuLinks = ({ isDrawerOpen }: { isDrawerOpen: boolean }) => 
     <>
       {menuLinks.map(({ label, href }) => {
         const isActive = router.pathname === href;
-        console.log(router.pathname);
-        console.log(href);
 
         return (
           <li key={href}>

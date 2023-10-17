@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { classNames } from "~~/utils/adora/cssUtils";
 
 export interface StatusDropdownProps {
   status: string;
@@ -13,7 +14,7 @@ export function StatusDropdown({ status, setStatus }: StatusDropdownProps) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        <Menu.Button className="inline-flex w-28 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-accent-content hover:bg-gray-50">
           {status || "Status"}
           <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
         </Menu.Button>
@@ -28,7 +29,7 @@ export function StatusDropdown({ status, setStatus }: StatusDropdownProps) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute left-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute left-0 z-10 mt-2 w-max origin-top-right rounded-md bg-white shadow-lg ring-1 ring-neutral ring-opacity-10 focus:outline-none">
           <div className="py-1">
             <MenuItem status={"All"} onClick={() => setStatus("")} />
             <MenuItem status={"Accepted"} onClick={onClick} />
@@ -41,10 +42,6 @@ export function StatusDropdown({ status, setStatus }: StatusDropdownProps) {
       </Transition>
     </Menu>
   );
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
 }
 
 const MenuItem = ({ status, onClick }: { status: string; onClick: any }) => {

@@ -15,7 +15,10 @@ const Home: NextPage = () => {
   return (
     <>
       <MetaHeader />
-      <div className="h-full flex items-center justify-center flex-col flex-grow pb-48 gap-10">
+      <div
+        style={{ backgroundImage: `url('/assets/background.png')` }}
+        className="h-full flex items-center justify-center flex-col flex-grow pb-60 gap-10 min-h-screen bg-cover bg-center"
+      >
         <div className="flex flex-col items-center gap-4">
           <div className="text-neutral text-4xl font-bold">Welcome to</div>
           <div className="text-primary text-7xl font-bold">Adora.Promo!</div>

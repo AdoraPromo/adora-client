@@ -1,3 +1,5 @@
+import { classNames } from "~~/utils/adora/cssUtils";
+
 export interface ButtonProps {
   classes?: ButtonClassesProps;
   text: string;
@@ -25,10 +27,14 @@ export const Button = ({ text, onClick, classes: classesProps }: ButtonProps) =>
     fontWeight: classesProps?.textColor ? `font-${classesProps?.fontWeight}` : "",
   } as ButtonClassesProps;
 
-  const classesJoined = Object.values(classes).join(" ");
+  // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
+  const classesJoined = classNames(
+    "flex flex-row justify-center items-center rounded-lg bg-primary ",
+    ...Object.values(classes),
+  );
 
   return (
-    <button onClick={onClick} className={`flex flex-row justify-center items-center rounded-lg ${classesJoined}`}>
+    <button onClick={onClick} className={classesJoined}>
       {text}
     </button>
   );
