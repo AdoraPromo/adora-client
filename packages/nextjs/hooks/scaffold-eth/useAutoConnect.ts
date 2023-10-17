@@ -27,8 +27,6 @@ const getInitialConnector = (
 
   const connector = connectors.find(f => f.id === previousWalletId);
   return { connector };
-
-  return undefined;
 };
 
 /**

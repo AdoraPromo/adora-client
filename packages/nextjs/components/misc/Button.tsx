@@ -1,33 +1,41 @@
-interface ButtonProps {
-  widthPx?: number;
-  heightPx?: number;
-  bgColor?: string;
-  textColor?: string;
+import { classNames } from "~~/utils/adora/cssUtils";
+
+export interface ButtonProps {
+  classes?: ButtonClassesProps;
   text: string;
   onClick: any;
 }
 
-export const Button = (props: ButtonProps) => {
-  const settings = {
-    widthPx: props.widthPx || 80,
-    heightPx: props.heightPx || 12,
-    bgColor: props.bgColor || "secondary-content",
-    textColor: props.textColor || "accent",
-    text: props.text || "{button_text}",
-    onClick: props.onClick || (() => console.log("button_action")),
-  } as ButtonProps;
+export interface ButtonClassesProps {
+  width?: string;
+  height?: string;
+  padding?: string;
+  bgColor?: string;
+  textColor?: string;
+  textSize?: string;
+  fontWeight?: string;
+}
+
+export const Button = ({ text, onClick, classes: classesProps }: ButtonProps) => {
+  const classes = {
+    width: classesProps?.width ? `w-${classesProps?.width}` : "",
+    height: classesProps?.height ? `h-${classesProps?.height}` : "",
+    padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
+    bgColor: classesProps?.bgColor ? `bg-${classesProps?.bgColor}` : "",
+    textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
+    textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
+    fontWeight: classesProps?.textColor ? `font-${classesProps?.fontWeight}` : "",
+  } as ButtonClassesProps;
+
+  // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
+  const classesJoined = classNames(
+    "flex flex-row justify-center items-center rounded-lg bg-primary ",
+    ...Object.values(classes),
+  );
 
   return (
-    <button
-      onClick={settings.onClick}
-      className={`
-            rounded-lg 
-            w-${settings.widthPx} 
-            h-${settings.heightPx} 
-            bg-${settings.bgColor} 
-            text-${settings.textColor}`}
-    >
-      {settings.text}
+    <button onClick={onClick} className={classesJoined}>
+      {text}
     </button>
   );
 };
