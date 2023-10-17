@@ -16,7 +16,10 @@ const AdoraApp = ({ Component, pageProps }: AppProps) => {
     <WagmiConfig config={wagmiConfig}>
       <NextNProgress />
       <RainbowKitProvider chains={appChains.chains} avatar={BlockieAvatar} theme={lightTheme()}>
-        <div className="flex flex-col min-h-screen">
+        <div
+          style={{ backgroundImage: `url('/assets/background.png')` }}
+          className="flex flex-col min-h-screen bg-cover bg-center"
+        >
           <Header />
           <main className="relative flex flex-col flex-1">
             <Component {...pageProps} />

@@ -1,33 +1,35 @@
-interface ButtonProps {
-  widthPx?: number;
-  heightPx?: number;
-  bgColor?: string;
-  textColor?: string;
+export interface ButtonProps {
+  classes?: ButtonClassesProps;
   text: string;
   onClick: any;
 }
 
-export const Button = (props: ButtonProps) => {
-  const settings = {
-    widthPx: props.widthPx || 80,
-    heightPx: props.heightPx || 12,
-    bgColor: props.bgColor || "secondary-content",
-    textColor: props.textColor || "accent",
-    text: props.text || "{button_text}",
-    onClick: props.onClick || (() => console.log("button_action")),
-  } as ButtonProps;
+export interface ButtonClassesProps {
+  width?: string;
+  height?: string;
+  padding?: string;
+  bgColor?: string;
+  textColor?: string;
+  textSize?: string;
+  fontWeight?: string;
+}
+
+export const Button = ({ text, onClick, classes: classesProps }: ButtonProps) => {
+  const classes = {
+    width: classesProps?.width ? `w-${classesProps?.width}` : "",
+    height: classesProps?.height ? `h-${classesProps?.height}` : "",
+    padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
+    bgColor: classesProps?.bgColor ? `bg-${classesProps?.bgColor}` : "",
+    textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
+    textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
+    fontWeight: classesProps?.textColor ? `font-${classesProps?.fontWeight}` : "",
+  } as ButtonClassesProps;
+
+  const classesJoined = Object.values(classes).join(" ");
 
   return (
-    <button
-      onClick={settings.onClick}
-      className={`
-            rounded-lg 
-            w-${settings.widthPx} 
-            h-${settings.heightPx} 
-            bg-${settings.bgColor} 
-            text-${settings.textColor}`}
-    >
-      {settings.text}
+    <button onClick={onClick} className={`flex flex-row justify-center items-center rounded-lg ${classesJoined}`}>
+      {text}
     </button>
   );
 };

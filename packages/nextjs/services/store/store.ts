@@ -10,12 +10,12 @@ import { create } from "zustand";
  */
 
 type TGlobalState = {
-  nativeCurrencyPrice: number;
-  setNativeCurrencyPrice: (newNativeCurrencyPriceState: number) => void;
+  address: string;
+  setAddress: (newAddress: string) => void;
 };
 
 // TODO: Keeping fields so that we don't forget how to set up our own state
 export const useGlobalState = create<TGlobalState>(set => ({
-  nativeCurrencyPrice: 0,
-  setNativeCurrencyPrice: (newValue: number): void => set(() => ({ nativeCurrencyPrice: newValue })),
+  address: "",
+  setAddress: (newAddress: string): void => set(() => ({ address: newAddress })),
 }));
