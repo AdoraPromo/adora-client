@@ -4,7 +4,6 @@ import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
-import { Button } from "~~/components/misc/Button";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import { DealType } from "~~/types/deal";
 
@@ -71,8 +70,6 @@ const Outgoing: NextPage = () => {
   const [allDeals] = useState(deals);
   const [filteredDeals, setFilteredDeals] = useState(deals);
 
-  const [openCreateModal, setOpenCreateModal] = useState(false);
-
   useEffect(() => {
     if (!status) {
       setFilteredDeals(allDeals);
@@ -92,26 +89,14 @@ const Outgoing: NextPage = () => {
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
-        <div>
-          <CreateDealModal open={openCreateModal} setOpen={setOpenCreateModal} />
-        </div>
+        <div></div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
-          <Button
-            classes={{
-              width: "auto",
-              height: "[12px]",
-              padding: "5 py-2",
-              bgColor: "primary",
-              textColor: "accent",
-              textSize: "lg",
-            }}
-            text="Create Deal"
-            onClick={() => setOpenCreateModal(!openCreateModal)}
-          />
+          <CreateDealModal />
         </div>
-        {filteredDeals.length != 0 && <DealGrid deals={filteredDeals} />}
-        {filteredDeals.length == 0 && (
+        {filteredDeals.length ? (
+          <DealGrid deals={filteredDeals} />
+        ) : (
           <div className="flex flex-col justify-center items-center w-full gap-10 p-10">
             <div className="flex flex-col justify-center items-center w-full text-2xl">
               <div>This Page is Empty.</div>

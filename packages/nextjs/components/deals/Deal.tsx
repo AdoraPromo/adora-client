@@ -7,9 +7,11 @@ import { notification } from "~~/utils/scaffold-eth";
 
 export interface DealProps {
   deal: DealType;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 }
 
-export const Deal = ({ deal }: DealProps) => {
+export const Deal = ({ deal, open, setOpen }: DealProps) => {
   const [button, setButton] = useState("" as any);
   const [color, setColor] = useState("");
   const [classes, setClasses] = useState("");
@@ -93,8 +95,8 @@ export const Deal = ({ deal }: DealProps) => {
   }, [deal.status]);
 
   return (
-    <div className={classes}>
-      <div className="flex flex-col gap-1" onClick={() => notification.info(Object.values(deal).join("\n"))}>
+    <div className={classes} onClick={() => setOpen && setOpen(!open)}>
+      <div className="flex flex-col gap-1">
         <div className={`text-${color}`}> &#9679; {deal.status}</div>
         <a
           className="underline text-info hover:cursor-pointer transition ease-in-out hover:opacity-75 duration-100"

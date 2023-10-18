@@ -1,11 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../misc/Button";
 import { Input } from "../misc/Input";
 import { TextArea } from "../misc/TextArea";
 import Modal from "./Modal";
-import { DealType } from "~~/types/deal";
 
-const CreateDealActions = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
+const ViewDealActions = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
   return (
     <div className="flex items-center justify-center p-6 gap-4">
       <Button
@@ -28,64 +27,26 @@ const CreateDealActions = ({ setOpen }: { setOpen: (open: boolean) => void }) =>
           textColor: "accent",
           textSize: "lg",
         }}
-        text="Create Deal"
+        text="View Deal"
         onClick={() => setOpen(false)}
       />
     </div>
   );
 };
 
-const CreateDealOpenTrigger = ({
-  title,
-  open,
-  setOpen,
-}: {
-  title: string;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}) => {
-  return (
-    <Button
-      classes={{
-        width: "auto",
-        height: "[12px]",
-        padding: "5 py-2",
-        bgColor: "primary",
-        textColor: "accent",
-        textSize: "lg",
-      }}
-      text={title}
-      onClick={() => setOpen(!open)}
-    />
-  );
-};
-
-export function CreateDealModal() {
-  const [deal, setDeal] = useState({
-    deadline: new Date(Date.now()),
-  } as DealType);
+const ViewDealModal = ({ children }: { children: JSX.Element }) => {
   const [open, setOpen] = useState(false);
-  const title = "Create Deal";
-
-  const updateTwitterHandle = (newHandle: string) => setDeal({ ...deal, twitterHandle: newHandle });
-  const updateDeadline = (newDeadline: Date) => setDeal({ ...deal, deadline: newDeadline });
-  const updatePaymentPerThousand = (newPaymentPerThousand: number) =>
-    setDeal({ ...deal, paymentPerThousand: newPaymentPerThousand });
-  const updateMaximumPayment = (newMaximumPayment: number) => setDeal({ ...deal, maxPayment: newMaximumPayment });
-
   return (
     <Modal
-      title={title}
+      openTrigger={<>{React.cloneElement(children, { open, setOpen })}</>}
+      title="View Deal"
       open={open}
       setOpen={setOpen}
-      openTrigger={<CreateDealOpenTrigger title={title} open={open} setOpen={setOpen} />}
-      footerActions={<CreateDealActions setOpen={setOpen} />}
+      footerActions={<ViewDealActions setOpen={setOpen} />}
     >
       <div className="relative p-6 px-10 flex flex-row justify-between items-center w-full gap-5">
         <div className="flex flex-col gap-5 w-1/2">
           <Input
-            content={deal.twitterHandle}
-            setContent={updateTwitterHandle}
             placeholder={"Paste the link here..."}
             type={"string"}
             label={"Twitter Account of the Creator"}
@@ -99,9 +60,7 @@ export function CreateDealModal() {
             }}
           />
           <Input
-            content={deal.deadline}
             placeholder="MM/DD/YYYY"
-            setContent={updateDeadline}
             type={"date"}
             label={"Deadline"}
             classes={{
@@ -128,8 +87,6 @@ export function CreateDealModal() {
             }}
           />
           <Input
-            content={deal.paymentPerThousand}
-            setContent={updatePaymentPerThousand}
             placeholder={"Type here..."}
             type={"number"}
             label={"Payment per 1000 likes"}
@@ -143,8 +100,6 @@ export function CreateDealModal() {
             }}
           />
           <Input
-            content={deal.maxPayment}
-            setContent={updateMaximumPayment}
             placeholder={"Type here..."}
             type={"number"}
             label={"Maximum Payment"}
@@ -160,8 +115,11 @@ export function CreateDealModal() {
         </div>
         <div className="flex flex-col w-1/2 h-full">
           <TextArea
-            content={deal.requirements}
-            setContent={(e: any) => setDeal({ ...deal, requirements: e.target.value })}
+            content={""}
+            // TODO: Fix
+            setContent={(e: any) => {
+              console.log(e);
+            }}
             placeholder={"Write all your requirements here. Try to be very clear and specific..."}
             label={"Requirements"}
             rows={16}
@@ -179,4 +137,6 @@ export function CreateDealModal() {
       </div>
     </Modal>
   );
-}
+};
+
+export default ViewDealModal;
