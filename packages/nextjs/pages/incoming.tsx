@@ -4,7 +4,10 @@ import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
+import { Button } from "~~/components/misc/Button";
+import { Input } from "~~/components/misc/Input";
 import { DealType } from "~~/types/deal";
+import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
   const deals: DealType[] = [
@@ -53,6 +56,7 @@ const Incoming: NextPage = () => {
   ];
 
   // TODO: Sort deals by expiration date
+  const [viewDealUrl, setViewDealUrl] = useState("");
   const [status, setStatus] = useState("");
   const [allDeals] = useState(deals);
   const [filteredDeals, setFilteredDeals] = useState(deals);
@@ -66,8 +70,6 @@ const Incoming: NextPage = () => {
     setFilteredDeals(allDeals.filter((deal: any) => deal?.status === status));
   }, [status, allDeals]);
 
-  // TODO: Add different background image than for root
-
   return (
     <div>
       <MetaHeader title="Incoming Deals - Adora.Promo" />
@@ -76,8 +78,36 @@ const Incoming: NextPage = () => {
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Incoming Deals</div>
-        <div className="flex flex-row justify-between items-center w-full">
+        <div className="flex flex-row justify-between items- w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
+          <div className="flex flex-row justify-end items-center w-1/2 gap-2">
+            <Input
+              content={viewDealUrl}
+              setContent={setViewDealUrl}
+              placeholder={"Enter deal's URL"}
+              type={"string"}
+              classes={{
+                width: "1/3",
+                padding: "2 px-4",
+                textColor: "neutral",
+                textSize: "md",
+                borderColor: "accent-focus",
+                hover: "transition hover:border-2 hover:border-accent-content duration-300",
+              }}
+            />
+            <Button
+              classes={{
+                width: "1/4",
+                height: "[12px]",
+                padding: "5 py-2",
+                bgColor: "primary",
+                textColor: "accent",
+                textSize: "lg",
+              }}
+              text="View Deal"
+              onClick={() => notification.info("View Deal")}
+            />
+          </div>
         </div>
         {filteredDeals.length != 0 && <DealGrid deals={filteredDeals} />}
         {filteredDeals.length == 0 && (
