@@ -24,7 +24,7 @@ export const Deal = ({ deal }: DealProps) => {
           textColor: "accent",
           textSize: "md",
           iconSize: "5",
-          hover: "transiton ease-in-out hover:opacity-80 duration-200",
+          hover: "transition ease-in-out hover:opacity-80 duration-200",
         }}
         text="View"
         onClick={() => notification.info("Viewing...")}
@@ -42,7 +42,7 @@ export const Deal = ({ deal }: DealProps) => {
               textColor: "accent",
               textSize: "md",
               iconSize: "5",
-              hover: "transiton ease-in-out hover:opacity-80 duration-200",
+              hover: "transition ease-in-out hover:opacity-80 duration-200",
             }}
             icon={ButtonIcon.Redeem}
             text="Redeem"
@@ -63,7 +63,7 @@ export const Deal = ({ deal }: DealProps) => {
               textColor: "accent",
               textSize: "md",
               iconSize: "5",
-              hover: "transiton ease-in-out hover:opacity-80 duration-200",
+              hover: "transition ease-in-out hover:opacity-80 duration-200",
             }}
             icon={ButtonIcon.Withdraw}
             text="Withdraw"
@@ -86,7 +86,7 @@ export const Deal = ({ deal }: DealProps) => {
     setClasses(
       classNames(
         `border-${color}`,
-        "flex flex-col gap-2 py-8 px-12 rounded-2xl border-solid border-2 hover:cursor-pointer transiton ease-in-out hover:scale-105 duration-300",
+        "flex flex-col gap-2 py-8 px-12 rounded-2xl border-solid border-2 hover:cursor-pointer transition ease-in-out hover:scale-105 duration-300",
       ),
     );
     setButton(button);
@@ -97,7 +97,7 @@ export const Deal = ({ deal }: DealProps) => {
       <div className="flex flex-col gap-1" onClick={() => notification.info(Object.values(deal).join("\n"))}>
         <div className={`text-${color}`}> &#9679; {deal.status}</div>
         <a
-          className="underline text-info hover:cursor-pointer transiton ease-in-out hover:opacity-75 duration-100"
+          className="underline text-info hover:cursor-pointer transition ease-in-out hover:opacity-75 duration-100"
           href={`https://twitter.com/${deal.twitterHandle}`}
           target="_blank"
           rel="noopener noreferrer"

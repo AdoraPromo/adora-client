@@ -5,8 +5,8 @@ import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { Button } from "~~/components/misc/Button";
+import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import { DealType } from "~~/types/deal";
-import { notification } from "~~/utils/scaffold-eth";
 
 const Outgoing: NextPage = () => {
   const deals: DealType[] = [
@@ -59,6 +59,8 @@ const Outgoing: NextPage = () => {
   const [allDeals] = useState(deals);
   const [filteredDeals, setFilteredDeals] = useState(deals);
 
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+
   useEffect(() => {
     if (!status) {
       setFilteredDeals(allDeals);
@@ -73,8 +75,14 @@ const Outgoing: NextPage = () => {
   return (
     <div>
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
-      <div className="flex flex-col items-start w-full h-full p-10 text-neutral gap-10">
+      <div
+        style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
+        className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
+      >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
+        <div onClick={() => setOpenCreateModal(false)}>
+          <CreateDealModal open={openCreateModal} setOpen={setOpenCreateModal} />
+        </div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
           <Button
@@ -88,7 +96,7 @@ const Outgoing: NextPage = () => {
               fontWeight: "bold",
             }}
             text="Create Deal"
-            onClick={() => notification.info("Create Deal")}
+            onClick={() => setOpenCreateModal(!openCreateModal)}
           />
         </div>
         {filteredDeals.length != 0 && <DealGrid deals={filteredDeals} />}

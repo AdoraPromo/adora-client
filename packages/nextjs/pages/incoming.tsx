@@ -71,7 +71,10 @@ const Incoming: NextPage = () => {
   return (
     <div>
       <MetaHeader title="Incoming Deals - Adora.Promo" />
-      <div className="flex flex-col items-start w-full h-full p-10 text-neutral gap-10">
+      <div
+        style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
+        className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
+      >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Incoming Deals</div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />

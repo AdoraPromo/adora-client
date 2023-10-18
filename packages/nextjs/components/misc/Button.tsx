@@ -43,8 +43,6 @@ export const Button = ({ text, onClick, icon, classes: classesProps }: ButtonPro
       ...Object.values(_buttonClasses),
     );
 
-    console.log(buttonClassesJoined);
-
     const _iconClasses = {
       size: classesProps?.iconSize ? `w-${classesProps.iconSize} h-${classesProps.iconSize}` : "",
     };
