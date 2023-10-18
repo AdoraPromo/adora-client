@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { classNames } from "~~/utils/adora/cssUtils";
 
 export interface ClassesProps {
@@ -12,64 +11,65 @@ export interface ClassesProps {
 }
 
 export interface InputProps {
+  full?: boolean;
   classes: ClassesProps;
   content?: any;
-  disabled?: boolean;
   setContent?: any;
-  placeholder: any;
+  placeholder?: any;
   type: string;
   label?: string;
+  readOnly?: boolean;
 }
 
 export const Input = ({
+  full,
   content,
   setContent,
   placeholder,
   type,
   label,
-  disabled,
+  readOnly,
   classes: classesProps,
 }: InputProps) => {
-  const [inputClasses, setInputClasses] = useState("");
-  const [wrapperClasses, setWrapperClasses] = useState("");
+  const _inputClasses = {
+    padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
+    borderColor: classesProps?.borderColor
+      ? `border-2 border-${classesProps?.borderColor} active:border-${classesProps?.borderColor} focus:outline-${classesProps?.borderColor}`
+      : "", // TODO: Focus border not applying
+    textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
+    textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
+    hover: classesProps?.hover ? classesProps.hover : "",
+  } as ClassesProps;
 
-  useEffect(() => {
-    const _inputClasses = {
-      padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
-      borderColor: classesProps?.borderColor
-        ? `border-2 border-${classesProps?.borderColor} active:border-${classesProps?.borderColor} focus:outline-${classesProps?.borderColor}`
-        : "", // TODO: Focus border not applying
-      textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
-      textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
-      hover: classesProps?.hover ? classesProps.hover : "",
-    } as ClassesProps;
+  // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
+  const inputClassesJoined = classNames(
+    "w-full rounded-lg gap", // bg-primary
+    ...Object.values(_inputClasses),
+  );
 
-    // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
-    const inputClassesJoined = classNames(
-      "w-full rounded-lg gap", // bg-primary
-      ...Object.values(_inputClasses),
-    );
+  // const _wrapperClasses = {
+  //   width: classesProps?.width ? `!w-${classesProps?.width}` : "",
+  //   height: classesProps?.height ? `h-${classesProps?.height}` : "",
+  // };
 
-    const _wrapperClasses = {
-      width: classesProps?.width ? `!w-${classesProps?.width}` : "",
-      height: classesProps?.height ? `h-${classesProps?.height}` : "",
-    };
+  let size = "";
 
-    const wrapperClassesJoined = classNames(
-      "flex flex-col gap-1", // bg-primary
-      ...Object.values(_wrapperClasses),
-    );
+  if (full) {
+    size = "!w-full !h-full";
+  } else {
+    size = "!w-3/4 !h-3/4";
+  }
 
-    setInputClasses(inputClassesJoined);
-    setWrapperClasses(wrapperClassesJoined);
-  }, [classesProps]);
+  const wrapperClassesJoined = classNames(
+    `flex flex-col justify-center gap-1 ${size}`, // bg-primary
+  );
 
   return (
-    <div className={wrapperClasses}>
+    <div className={wrapperClassesJoined}>
       {label && <label className="text-neutral font-bold ml-2">{label}</label>}
       <input
-        disabled={disabled}
-        className={inputClasses}
+        readOnly={readOnly}
+        className={inputClassesJoined}
         value={content}
         min={type === "number" ? 0 : ""}
         onChange={setContent ? e => setContent(e.target.value) : undefined}

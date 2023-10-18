@@ -10,7 +10,7 @@ export const DealGrid = ({ deals }: DealGridProps) => {
   return (
     <div className="flex flex-row flex-wrap gap-5 justify-items-start">
       {deals?.map(deal => (
-        <ViewDealModal key={deal.id}>
+        <ViewDealModal key={deal.id} deal={deal}>
           <Deal deal={deal} />
         </ViewDealModal>
       ))}

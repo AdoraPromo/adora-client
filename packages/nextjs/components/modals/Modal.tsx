@@ -16,8 +16,6 @@ const Modal = ({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
-  console.log(openTrigger);
-
   return (
     <>
       {openTrigger}

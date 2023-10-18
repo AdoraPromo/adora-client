@@ -11,33 +11,41 @@ const Outgoing: NextPage = () => {
   const deals: DealType[] = [
     {
       id: "1",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Accepted",
       twitterHandle: "twitteraccount",
       paymentPerThousand: 10,
       maxPayment: 1000,
-      deadline: new Date(Date.now() + 2 * 60 * 1000), // Add 2 minutes
+      deadline: new Date(),
       requirements: "",
     },
     {
       id: "2",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Withdrawn",
       twitterHandle: "twitteraccount",
       paymentPerThousand: 10,
       maxPayment: 1000,
-      deadline: new Date(Date.now() + 2 * 60 * 60 * 1000), // Add 2 hours
+      deadline: new Date(),
       requirements: "",
     },
     {
       id: "3",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Pending",
       twitterHandle: "twitteraccount",
       paymentPerThousand: 10,
       maxPayment: 1000,
-      deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Add 2 days
+      deadline: new Date(),
       requirements: "",
     },
     {
       id: "4",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Expired",
       twitterHandle: "twitteraccount",
       paymentPerThousand: 10,
@@ -47,6 +55,8 @@ const Outgoing: NextPage = () => {
     },
     {
       id: "5",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Redeemed",
       twitterHandle: "twitteraccount",
       paymentPerThousand: 10,
@@ -56,6 +66,8 @@ const Outgoing: NextPage = () => {
     },
     {
       id: "6",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Accepted",
       twitterHandle: "twitteraccount",
       paymentPerThousand: 10,

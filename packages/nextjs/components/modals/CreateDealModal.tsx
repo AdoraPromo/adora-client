@@ -3,37 +3,8 @@ import { Button } from "../misc/Button";
 import { Input } from "../misc/Input";
 import { TextArea } from "../misc/TextArea";
 import Modal from "./Modal";
+import DealActions from "./deal-info/DealActions";
 import { DealType } from "~~/types/deal";
-
-const CreateDealActions = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
-  return (
-    <div className="flex items-center justify-center p-6 gap-4">
-      <Button
-        classes={{
-          height: "[12px]",
-          padding: "6 py-2",
-          borderColor: "primary",
-          textColor: "primary",
-          textSize: "lg",
-        }}
-        text="Cancel"
-        onClick={() => setOpen(false)}
-      />
-      <Button
-        classes={{
-          width: "auto",
-          height: "[12px]",
-          padding: "5 py-2",
-          bgColor: "primary",
-          textColor: "accent",
-          textSize: "lg",
-        }}
-        text="Create Deal"
-        onClick={() => setOpen(false)}
-      />
-    </div>
-  );
-};
 
 const CreateDealOpenTrigger = ({
   title,
@@ -79,11 +50,12 @@ export function CreateDealModal() {
       open={open}
       setOpen={setOpen}
       openTrigger={<CreateDealOpenTrigger title={title} open={open} setOpen={setOpen} />}
-      footerActions={<CreateDealActions setOpen={setOpen} />}
+      footerActions={<DealActions actionTitle={title} onClose={() => setOpen(false)} onAction={() => setOpen(false)} />}
     >
       <div className="relative p-6 px-10 flex flex-row justify-between items-center w-full gap-5">
         <div className="flex flex-col gap-5 w-1/2">
           <Input
+            full
             content={deal.twitterHandle}
             setContent={updateTwitterHandle}
             placeholder={"Paste the link here..."}
@@ -99,6 +71,7 @@ export function CreateDealModal() {
             }}
           />
           <Input
+            full
             content={deal.deadline}
             placeholder="MM/DD/YYYY"
             setContent={updateDeadline}
@@ -114,7 +87,8 @@ export function CreateDealModal() {
             }}
           />
           <Input
-            disabled
+            full
+            readOnly
             placeholder={"APE"}
             type={"string"}
             label={"Currency"}
@@ -128,6 +102,7 @@ export function CreateDealModal() {
             }}
           />
           <Input
+            full
             content={deal.paymentPerThousand}
             setContent={updatePaymentPerThousand}
             placeholder={"Type here..."}
@@ -143,6 +118,7 @@ export function CreateDealModal() {
             }}
           />
           <Input
+            full
             content={deal.maxPayment}
             setContent={updateMaximumPayment}
             placeholder={"Type here..."}
@@ -160,6 +136,7 @@ export function CreateDealModal() {
         </div>
         <div className="flex flex-col w-1/2 h-full">
           <TextArea
+            full
             content={deal.requirements}
             setContent={(e: any) => setDeal({ ...deal, requirements: e.target.value })}
             placeholder={"Write all your requirements here. Try to be very clear and specific..."}

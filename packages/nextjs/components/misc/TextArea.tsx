@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { classNames } from "~~/utils/adora/cssUtils";
 
 export interface ClassesProps {
@@ -12,55 +11,49 @@ export interface ClassesProps {
 }
 
 export interface TextAreaProps {
+  full?: boolean;
   classes: ClassesProps;
   content: any;
-  setContent: any;
-  placeholder: any;
+  setContent?: any;
+  placeholder?: any;
   label?: string;
   rows: number;
 }
 
-export const TextArea = ({ content, setContent, placeholder, label, rows, classes: classesProps }: TextAreaProps) => {
-  const [textAreaClasses, setTextAreaClasses] = useState("");
-  const [wrapperClasses, setWrapperClasses] = useState("");
+export const TextArea = ({ full, content, setContent, placeholder, label, rows, classes: classes }: TextAreaProps) => {
+  const _textAreaClasses = {
+    padding: classes?.padding ? `p-${classes?.padding}` : "",
+    borderColor: classes?.borderColor
+      ? `border-2 border-${classes?.borderColor} active:border-${classes?.borderColor} focus:outline-${classes?.borderColor}`
+      : "", // TODO: Focus border not applying
+    textColor: classes?.textColor ? `text-${classes?.textColor}` : "",
+    textSize: classes?.textColor ? `text-${classes?.textSize}` : "",
+    hover: classes?.hover ? classes.hover : "",
+  } as ClassesProps;
 
-  useEffect(() => {
-    const _textAreaClasses = {
-      padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
-      borderColor: classesProps?.borderColor
-        ? `border-2 border-${classesProps?.borderColor} active:border-${classesProps?.borderColor} focus:outline-${classesProps?.borderColor}`
-        : "", // TODO: Focus border not applying
-      textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
-      textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
-      hover: classesProps?.hover ? classesProps.hover : "",
-    } as ClassesProps;
+  // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
+  const textAreaClassesJoined = classNames(
+    "w-full rounded-lg gap", // bg-primary
+    ...Object.values(_textAreaClasses),
+  );
 
-    // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
-    const textAreaClassesJoined = classNames(
-      "w-full rounded-lg gap", // bg-primary
-      ...Object.values(_textAreaClasses),
-    );
+  let size = "";
+  if (full) {
+    size = "!w-full !h-full";
+  } else {
+    size = "!w-3/4 !h-3/4";
+  }
 
-    const _wrapperClasses = {
-      width: classesProps?.width ? `!w-${classesProps?.width}` : "",
-      height: classesProps?.height ? `!h-${classesProps?.height}` : "",
-    };
-
-    const wrapperClassesJoined = classNames(
-      "flex flex-col gap-1", // bg-primary
-      ...Object.values(_wrapperClasses),
-    );
-
-    setTextAreaClasses(textAreaClassesJoined);
-    setWrapperClasses(wrapperClassesJoined);
-  }, [classesProps]);
+  const wrapperClassesJoined = classNames(
+    `flex flex-col gap-1 ${size}`, // bg-primary
+  );
 
   return (
-    <div className={wrapperClasses}>
+    <div className={wrapperClassesJoined}>
       {label && <label className="text-neutral font-bold">{label}</label>}
       <textarea
         rows={rows || 10}
-        className={textAreaClasses}
+        className={textAreaClassesJoined}
         value={content}
         onChange={setContent}
         placeholder={placeholder}
