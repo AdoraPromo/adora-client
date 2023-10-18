@@ -4,53 +4,76 @@ import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
-import { Button } from "~~/components/misc/Button";
+import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import { DealType } from "~~/types/deal";
-import { notification } from "~~/utils/scaffold-eth";
 
 const Outgoing: NextPage = () => {
   const deals: DealType[] = [
     {
       id: "1",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Accepted",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "2",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Withdrawn",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "3",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Pending",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "4",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Expired",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "5",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Redeemed",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "6",
+      creator: "0x123",
+      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
       status: "Accepted",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
   ];
 
@@ -73,26 +96,19 @@ const Outgoing: NextPage = () => {
   return (
     <div>
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
-      <div className="flex flex-col items-start w-full h-full p-10 text-neutral gap-10">
+      <div
+        style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
+        className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
+      >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
+        <div></div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
-          <Button
-            classes={{
-              width: "1/4",
-              height: "[12px]",
-              padding: "5 py-2",
-              bgColor: "primary",
-              textColor: "accent",
-              textSize: "lg",
-              fontWeight: "bold",
-            }}
-            text="Create Deal"
-            onClick={() => notification.info("Create Deal")}
-          />
+          <CreateDealModal />
         </div>
-        {filteredDeals.length != 0 && <DealGrid deals={filteredDeals} />}
-        {filteredDeals.length == 0 && (
+        {filteredDeals.length ? (
+          <DealGrid deals={filteredDeals} />
+        ) : (
           <div className="flex flex-col justify-center items-center w-full gap-10 p-10">
             <div className="flex flex-col justify-center items-center w-full text-2xl">
               <div>This Page is Empty.</div>

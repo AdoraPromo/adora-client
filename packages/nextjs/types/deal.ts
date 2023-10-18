@@ -1,7 +1,11 @@
 export interface DealType {
   id: string;
+  creator: string;
+  sponsor: string;
   status: string;
   twitterHandle: string;
-  timeRemaining: string;
-  paymentAmount: string;
+  deadline: Date;
+  paymentPerThousand: number;
+  maxPayment: number;
+  requirements: string;
 }
