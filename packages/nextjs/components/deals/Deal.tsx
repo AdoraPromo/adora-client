@@ -104,13 +104,39 @@ export const Deal = ({ deal }: DealProps) => {
         >
           @{deal.twitterHandle}
         </a>
-        <div className="flex flex-row gap-3">
-          <div>{deal.timeRemaining}</div>
+        <div className="flex flex-row gap-3 w-52">
+          <div className="flex flex-row w-3/5">{getRemainingTime(deal.deadline)}</div>
           <div>|</div>
-          <div>{deal.paymentAmount}</div>
+          <div className="w-2/5">{deal.maxPayment} APE</div>
         </div>
       </div>
       {button}
     </div>
   );
 };
+
+function getRemainingTime(deadline: Date): string {
+  const diff = (deadline.getTime() - Date.now()) / 1000 / 60; // Difference in minutes
+
+  console.log("~~~~~~~~");
+  console.log(deadline);
+  console.log(new Date(Date.now()));
+  console.log(deadline.getTime());
+  console.log(Date.now());
+  console.log(diff);
+  console.log("~~~~~~~~");
+
+  if (diff < 0) {
+    return "Expired";
+  } else if (diff < 60) {
+    // < 1 hour
+    return `${diff.toFixed(0)} minutes left`;
+  } else if (diff < 24 * 60) {
+    // < 1 day
+    return `${(diff / 24).toFixed(0)} hours left`;
+  } else if (diff >= 24 * 60) {
+    return `${(diff / 24 / 60).toFixed(0)} days left`;
+  }
+
+  return "";
+}

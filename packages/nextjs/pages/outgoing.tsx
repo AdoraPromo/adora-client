@@ -14,43 +14,55 @@ const Outgoing: NextPage = () => {
       id: "1",
       status: "Accepted",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(Date.now() + 2 * 60 * 1000), // Add 2 minutes
+      requirements: "",
     },
     {
       id: "2",
       status: "Withdrawn",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(Date.now() + 2 * 60 * 60 * 1000), // Add 2 hours
+      requirements: "",
     },
     {
       id: "3",
       status: "Pending",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Add 2 days
+      requirements: "",
     },
     {
       id: "4",
       status: "Expired",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "5",
       status: "Redeemed",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
     {
       id: "6",
       status: "Accepted",
       twitterHandle: "twitteraccount",
-      timeRemaining: "5 days",
-      paymentAmount: "2083 APE",
+      paymentPerThousand: 10,
+      maxPayment: 1000,
+      deadline: new Date(),
+      requirements: "",
     },
   ];
 
@@ -80,20 +92,19 @@ const Outgoing: NextPage = () => {
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
-        <div onClick={() => setOpenCreateModal(false)}>
+        <div>
           <CreateDealModal open={openCreateModal} setOpen={setOpenCreateModal} />
         </div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
           <Button
             classes={{
-              width: "1/4",
+              width: "auto",
               height: "[12px]",
               padding: "5 py-2",
               bgColor: "primary",
               textColor: "accent",
               textSize: "lg",
-              fontWeight: "bold",
             }}
             text="Create Deal"
             onClick={() => setOpenCreateModal(!openCreateModal)}

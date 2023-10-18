@@ -11,30 +11,21 @@ export interface ClassesProps {
   hover?: string;
 }
 
-export interface InputProps {
+export interface TextAreaProps {
   classes: ClassesProps;
-  content?: any;
-  disabled?: boolean;
-  setContent?: any;
+  content: any;
+  setContent: any;
   placeholder: any;
-  type: string;
   label?: string;
+  rows: number;
 }
 
-export const Input = ({
-  content,
-  setContent,
-  placeholder,
-  type,
-  label,
-  disabled,
-  classes: classesProps,
-}: InputProps) => {
-  const [inputClasses, setInputClasses] = useState("");
+export const TextArea = ({ content, setContent, placeholder, label, rows, classes: classesProps }: TextAreaProps) => {
+  const [textAreaClasses, setTextAreaClasses] = useState("");
   const [wrapperClasses, setWrapperClasses] = useState("");
 
   useEffect(() => {
-    const _inputClasses = {
+    const _textAreaClasses = {
       padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
       borderColor: classesProps?.borderColor
         ? `border-2 border-${classesProps?.borderColor} active:border-${classesProps?.borderColor} focus:outline-${classesProps?.borderColor}`
@@ -45,14 +36,14 @@ export const Input = ({
     } as ClassesProps;
 
     // Note: 'bg-primary' is the because Tailwind sometimes bugs out and doesn't take in the passed dynamic value
-    const inputClassesJoined = classNames(
+    const textAreaClassesJoined = classNames(
       "w-full rounded-lg gap", // bg-primary
-      ...Object.values(_inputClasses),
+      ...Object.values(_textAreaClasses),
     );
 
     const _wrapperClasses = {
       width: classesProps?.width ? `!w-${classesProps?.width}` : "",
-      height: classesProps?.height ? `h-${classesProps?.height}` : "",
+      height: classesProps?.height ? `!h-${classesProps?.height}` : "",
     };
 
     const wrapperClassesJoined = classNames(
@@ -60,21 +51,19 @@ export const Input = ({
       ...Object.values(_wrapperClasses),
     );
 
-    setInputClasses(inputClassesJoined);
+    setTextAreaClasses(textAreaClassesJoined);
     setWrapperClasses(wrapperClassesJoined);
   }, [classesProps]);
 
   return (
     <div className={wrapperClasses}>
-      {label && <label className="text-neutral font-bold ml-2">{label}</label>}
-      <input
-        disabled={disabled}
-        className={inputClasses}
+      {label && <label className="text-neutral font-bold">{label}</label>}
+      <textarea
+        rows={rows || 10}
+        className={textAreaClasses}
         value={content}
-        min={type === "number" ? 0 : ""}
-        onChange={setContent ? e => setContent(e.target.value) : undefined}
+        onChange={setContent}
         placeholder={placeholder}
-        type={type}
       />
     </div>
   );

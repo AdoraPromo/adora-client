@@ -1,4 +1,9 @@
-import { Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { Button } from "../misc/Button";
+import { Input } from "../misc/Input";
+import { TextArea } from "../misc/TextArea";
+import { Dialog, Transition } from "@headlessui/react";
+import { DealType } from "~~/types/deal";
 
 export interface CreateDealModalProps {
   open: boolean;
@@ -6,51 +11,174 @@ export interface CreateDealModalProps {
 }
 
 export function CreateDealModal({ open, setOpen }: CreateDealModalProps) {
+  const [deal, setDeal] = useState({
+    deadline: new Date(Date.now()),
+  } as DealType);
+
+  const updateTwitterHandle = (newHandle: string) => setDeal({ ...deal, twitterHandle: newHandle });
+  const updateDeadline = (newDeadline: Date) => setDeal({ ...deal, deadline: newDeadline });
+  const updatePaymentPerThousand = (newPaymentPerThousand: number) =>
+    setDeal({ ...deal, paymentPerThousand: newPaymentPerThousand });
+  const updateMaximumPayment = (newMaximumPayment: number) => setDeal({ ...deal, maxPayment: newMaximumPayment });
+
   return (
-    <>
-      <Transition
-        show={open}
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-400"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-          <div className="relative w-auto my-6 mx-auto max-w-3xl">
-            {/*content*/}
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              {/*header*/}
-              <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                <h3 className="text-3xl font-semibold">Modal Title</h3>
-              </div>
-              {/*body*/}
-              <div className="relative p-6 flex-auto">
-                <p className="my-4 text-blueGray-500 text-lg leading-relaxed">Modal content</p>
-              </div>
-              {/*footer*/}
-              <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                <button
-                  className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  type="button"
-                  onClick={() => setOpen(false)}
-                >
-                  Close
-                </button>
-                <button
-                  className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  type="button"
-                  onClick={() => setOpen(false)}
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
+    <Transition appear show={open} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={() => setOpen(false)}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="flex flex-col justify-center items-center w-2/3 transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title as="h1" className="text-2xl text-neutral font-bold">
+                  Create Deal
+                </Dialog.Title>
+                {/*body*/}
+                <div className="relative p-6 px-10 flex flex-row justify-between items-center w-full gap-5">
+                  <div className="flex flex-col gap-5 w-1/2">
+                    <Input
+                      content={deal.twitterHandle}
+                      setContent={updateTwitterHandle}
+                      placeholder={"Paste the link here..."}
+                      type={"string"}
+                      label={"Twitter Account of the Creator"}
+                      classes={{
+                        width: "full",
+                        padding: "2 px-4",
+                        textColor: "neutral",
+                        textSize: "md",
+                        borderColor: "accent-focus",
+                        hover: "transition hover:border-2 hover:border-accent-content duration-300",
+                      }}
+                    />
+                    <Input
+                      content={deal.deadline}
+                      placeholder="MM/DD/YYYY"
+                      setContent={updateDeadline}
+                      type={"date"}
+                      label={"Deadline"}
+                      classes={{
+                        width: "[50rem]",
+                        padding: "2 px-4",
+                        textColor: "neutral",
+                        textSize: "md",
+                        borderColor: "accent-focus",
+                        hover: "transition hover:border-2 hover:border-accent-content duration-300",
+                      }}
+                    />
+                    <Input
+                      disabled
+                      placeholder={"APE"}
+                      type={"string"}
+                      label={"Currency"}
+                      classes={{
+                        width: "[50rem]",
+                        padding: "2 px-4",
+                        textColor: "neutral",
+                        textSize: "md",
+                        borderColor: "accent-focus",
+                        hover: "transition hover:border-2 hover:border-accent-content duration-300",
+                      }}
+                    />
+                    <Input
+                      content={deal.paymentPerThousand}
+                      setContent={updatePaymentPerThousand}
+                      placeholder={"Type here..."}
+                      type={"number"}
+                      label={"Payment per 1000 likes"}
+                      classes={{
+                        width: "[50rem]",
+                        padding: "2 px-4",
+                        textColor: "neutral",
+                        textSize: "md",
+                        borderColor: "accent-focus",
+                        hover: "transition hover:border-2 hover:border-accent-content duration-300",
+                      }}
+                    />
+                    <Input
+                      content={deal.maxPayment}
+                      setContent={updateMaximumPayment}
+                      placeholder={"Type here..."}
+                      type={"number"}
+                      label={"Maximum Payment"}
+                      classes={{
+                        width: "[50rem]",
+                        padding: "2 px-4",
+                        textColor: "neutral",
+                        textSize: "md",
+                        borderColor: "accent-focus",
+                        hover: "transition hover:border-2 hover:border-accent-content duration-300",
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col w-1/2 h-full">
+                    <TextArea
+                      content={deal.requirements}
+                      setContent={(e: any) => setDeal({ ...deal, requirements: e.target.value })}
+                      placeholder={"Write all your requirements here. Try to be very clear and specific..."}
+                      label={"Requirements"}
+                      rows={16}
+                      classes={{
+                        width: "fit", // TODO: These don't work
+                        height: "fit",
+                        padding: "2 px-4",
+                        textColor: "neutral",
+                        textSize: "md",
+                        borderColor: "accent-focus",
+                        hover: "transition hover:border-2 hover:border-accent-content duration-300",
+                      }}
+                    />
+                  </div>
+                </div>
+                {/*footer*/}
+                <div className="flex items-center justify-center p-6 gap-4">
+                  <Button
+                    classes={{
+                      height: "[12px]",
+                      padding: "6 py-2",
+                      borderColor: "primary",
+                      textColor: "primary",
+                      textSize: "lg",
+                    }}
+                    text="Cancel"
+                    onClick={() => setOpen(false)}
+                  />
+                  <Button
+                    classes={{
+                      width: "auto",
+                      height: "[12px]",
+                      padding: "5 py-2",
+                      bgColor: "primary",
+                      textColor: "accent",
+                      textSize: "lg",
+                    }}
+                    text="Create Deal"
+                    onClick={() => setOpen(false)}
+                  />
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
         </div>
-        <div className="opacity-25 fixed inset-0 z-40 bg-black" onClick={() => setOpen(false)}></div>
-      </Transition>
-    </>
+      </Dialog>
+    </Transition>
   );
 }
