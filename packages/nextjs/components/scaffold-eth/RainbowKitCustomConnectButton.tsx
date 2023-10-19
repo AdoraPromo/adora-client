@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { QRCodeSVG } from "qrcode.react";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -13,7 +12,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { Address, BlockieAvatar } from "~~/components/scaffold-eth";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
-import { useGlobalState } from "~~/services/store/store";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 /**
@@ -21,25 +19,16 @@ import { getTargetNetwork } from "~~/utils/scaffold-eth";
  */
 export const RainbowKitCustomConnectButton = () => {
   useAutoConnect();
-  const router = useRouter();
   const networkColor = useNetworkColor();
   const configuredNetwork = getTargetNetwork();
   const { disconnect } = useDisconnect();
   const { switchNetwork } = useSwitchNetwork();
   const [addressCopied, setAddressCopied] = useState(false);
-  const { address, setAddress } = useGlobalState();
 
   return (
     <ConnectButton.Custom>
       {({ account, chain, openConnectModal, mounted }) => {
         const connected = mounted && account && chain;
-
-        if (!address && connected) {
-          setAddress(account.address);
-        } else if (address && !connected) {
-          router.push("/");
-          setAddress("");
-        }
 
         return (
           <>

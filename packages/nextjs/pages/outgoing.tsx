@@ -5,82 +5,29 @@ import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
+import DealSentModal from "~~/components/modals/DealSentModal";
 import { DealType } from "~~/types/deal";
+import { DealStatus } from "~~/utils/adora/enums";
+import { sponsorDeals as deals } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
-  const deals: DealType[] = [
-    {
-      id: "1",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Accepted",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "2",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Withdrawn",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "3",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Pending",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "4",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Expired",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "5",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Redeemed",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "6",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Accepted",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-  ];
-
   // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
-  const [allDeals] = useState(deals);
-  const [filteredDeals, setFilteredDeals] = useState(deals);
+  const [dealCreation, setDealCreation] = useState<DealType>({
+    id: "",
+    creator: "1",
+    sponsor: "1",
+    status: DealStatus.PENDING,
+    twitterHandle: "",
+    deadline: new Date(Date.now()),
+    paymentPerThousand: 1,
+    maxPayment: 1,
+    requirements: "",
+  });
+  const [allDeals] = useState<DealType[]>(deals);
+  const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
+
+  const [dealSentModalOpen, setDealSentModalOpen] = useState(false);
 
   useEffect(() => {
     if (!status) {
@@ -91,20 +38,22 @@ const Outgoing: NextPage = () => {
     setFilteredDeals(allDeals.filter((deal: any) => deal?.status === status));
   }, [status, allDeals]);
 
-  // TODO: Add different background image than for root
-
   return (
-    <div>
+    <>
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
       <div
         style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
-        <div></div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
-          <CreateDealModal />
+          <CreateDealModal onSuccess={() => setDealSentModalOpen(true)} deal={dealCreation} setDeal={setDealCreation} />
+          <DealSentModal
+            open={dealSentModalOpen}
+            setOpen={setDealSentModalOpen}
+            dealId={dealCreation?.id ? dealCreation?.id : ""}
+          />
         </div>
         {filteredDeals.length ? (
           <DealGrid deals={filteredDeals} />
@@ -120,7 +69,7 @@ const Outgoing: NextPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

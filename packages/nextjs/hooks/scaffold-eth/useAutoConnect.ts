@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { useEffectOnce, useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { Connector, useAccount, useConnect } from "wagmi";
+import { useGlobalState } from "~~/services/store/store";
 
 const SCAFFOLD_WALLET_STROAGE_KEY = "scaffoldEth2.wallet";
 const WAGMI_WALLET_STORAGE_KEY = "wagmi.wallet";
@@ -37,6 +39,18 @@ export const useAutoConnect = (): void => {
   const [walletId, setWalletId] = useLocalStorage<string>(SCAFFOLD_WALLET_STROAGE_KEY, wagmiWalletValue ?? "");
   const connectState = useConnect();
   const accountState = useAccount();
+
+  const router = useRouter();
+  const { address, setAddress } = useGlobalState();
+
+  useEffect(() => {
+    if (!address && accountState.isConnected && accountState.address) {
+      setAddress(accountState.address);
+    } else if (address && !accountState.isConnected) {
+      router.push("/");
+      setAddress("");
+    }
+  }, [accountState]); // eslint-disable-line
 
   useEffect(() => {
     if (accountState.isConnected) {

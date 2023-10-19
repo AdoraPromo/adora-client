@@ -1,29 +1,17 @@
 import DealActions from "../../deal-info/DealActions";
-import { DealStatus } from "~~/components/deals/Status";
 import { DealType } from "~~/types/deal";
+import { getActionTitleByStatus } from "~~/utils/adora/getByStatus";
 import { notification } from "~~/utils/scaffold-eth";
 
-const getActionTitle = (status: string) => {
-  switch (status) {
-    case DealStatus.ACCEPTED:
-      return "Redeem";
-    case DealStatus.PENDING:
-      return "Accept";
-    case DealStatus.REDEEMED:
-      return "View Tweet";
-    default:
-      return "";
-  }
-};
-
 const CreatorModalActions = ({ deal, onClose }: { deal: DealType; onClose: () => void }) => {
-  return (
-    <DealActions
-      onClose={onClose}
-      actionTitle={getActionTitle(deal.status)}
-      onAction={() => notification.info("Create action for " + getActionTitle(deal.status))}
-    />
-  );
+  // ADD: Based on the action, add a function to perform upon clicking the action button
+  const creatorAction = getActionTitleByStatus(false, deal.status);
+
+  const onActionCallback = () => {
+    notification.info("Create action for " + creatorAction);
+  };
+
+  return <DealActions deal={deal} onClose={onClose} actionTitle={creatorAction} onAction={onActionCallback} />;
 };
 
 export default CreatorModalActions;

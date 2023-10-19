@@ -1,10 +1,9 @@
-import React from "react";
 import StatusDeadlinePayments from "../../deal-info-field-combinations/StatusDeadlinePayments";
 import StatusDeadlineWithdrawalAmount from "../../deal-info-field-combinations/StatusDeadlineWithdrawalAmount";
 import RequirementsReadOnlyTextArea from "../../deal-info/RequirementsReadOnlyTextArea";
 import TwitterHandleReadOnlyInput from "../../deal-info/TwitterHandleReadOnlyInput";
-import { DealStatus } from "~~/components/deals/Status";
 import { DealType } from "~~/types/deal";
+import { DealStatus } from "~~/utils/adora/enums";
 
 const SponsorModalBody = ({ deal }: { deal: DealType }) => {
   return (

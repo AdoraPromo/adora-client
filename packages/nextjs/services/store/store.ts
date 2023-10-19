@@ -14,7 +14,6 @@ type TGlobalState = {
   setAddress: (newAddress: string) => void;
 };
 
-// TODO: Keeping fields so that we don't forget how to set up our own state
 export const useGlobalState = create<TGlobalState>(set => ({
   address: "",
   setAddress: (newAddress: string): void => set(() => ({ address: newAddress })),

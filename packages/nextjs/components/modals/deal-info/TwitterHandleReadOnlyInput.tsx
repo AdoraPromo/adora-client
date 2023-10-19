@@ -3,6 +3,7 @@ import { Input } from "~~/components/misc/Input";
 const TwitterHandleReadOnlyInput = ({ twitterHandle }: { twitterHandle: string }) => {
   return (
     <Input
+      readOnly
       content={twitterHandle}
       type={"string"}
       label={"Twitter Account of the Creator"}

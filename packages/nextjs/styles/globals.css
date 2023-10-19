@@ -30,3 +30,50 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+/* Note: because Tailwind sucks, we have to hack dynamic colors like this */
+
+/* ~~~~ PRIMARY ~~~~  */
+.custom-border-primary {
+  border: 1px solid hsl(var(--p) / var(--tw-border-opacity)) !important;
+}
+.custom-bg-primary {
+  background-color: hsl(var(--p) / var(--tw-bg-opacity)) !important;
+}
+/* ~~~~~~~~~~~~~~ */
+
+/* ~~~~ ERROR  ~~~~ */
+.custom-border-error {
+  border: 1px solid hsl(var(--er) / var(--tw-border-opacity)) !important;
+}
+.custom-bg-error {
+  background-color: hsl(var(--er) / var(--tw-bg-opacity)) !important;
+}
+/* ~~~~~~~~~~~~~~ */
+
+/* ~~~~ INFO ~~~~ */
+.custom-border-info {
+  border: 1px solid hsl(var(--in) / var(--tw-border-opacity)) !important;
+}
+.custom-bg-info {
+  background-color: hsl(var(--in) / var(--tw-bg-opacity)) !important;
+}
+/* ~~~~~~~~~~~~~~ */
+
+/* ~~~~ SUCCESS ~~~~ */
+.custom-border-success {
+  border: 1px solid hsl(var(--su) / var(--tw-border-opacity)) !important;
+}
+.custom-bg-success {
+  background-color: hsl(var(--su) / var(--tw-bg-opacity)) !important;
+}
+/* ~~~~~~~~~~~~~~ */
+
+/* ~~~~ WARNING ~~~~  */
+.custom-border-warning {
+  border: 1px solid hsl(var(--wa) / var(--tw-border-opacity)) !important;
+}
+.custom-bg-warning {
+  background-color: hsl(var(--wa) / var(--tw-bg-opacity)) !important;
+}
+/* ~~~~~~~~~~~~~~ */
