@@ -5,6 +5,7 @@ import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
+import DealSentModal from "~~/components/modals/DealSentModal";
 import { DealType } from "~~/types/deal";
 
 const Outgoing: NextPage = () => {
@@ -82,6 +83,8 @@ const Outgoing: NextPage = () => {
   const [allDeals] = useState(deals);
   const [filteredDeals, setFilteredDeals] = useState(deals);
 
+  const [dealSentModalOpen, setDealSentModalOpen] = useState(false);
+
   useEffect(() => {
     if (!status) {
       setFilteredDeals(allDeals);
@@ -104,7 +107,8 @@ const Outgoing: NextPage = () => {
         <div></div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
-          <CreateDealModal />
+          <CreateDealModal onSuccess={() => setDealSentModalOpen(true)} />
+          <DealSentModal open={dealSentModalOpen} setOpen={setDealSentModalOpen} />
         </div>
         {filteredDeals.length ? (
           <DealGrid deals={filteredDeals} />

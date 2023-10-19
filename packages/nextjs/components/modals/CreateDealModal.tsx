@@ -31,7 +31,7 @@ const CreateDealOpenTrigger = ({
   );
 };
 
-export function CreateDealModal() {
+export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
   const [deal, setDeal] = useState({
     deadline: new Date(Date.now()),
   } as DealType);
@@ -50,7 +50,16 @@ export function CreateDealModal() {
       open={open}
       setOpen={setOpen}
       openTrigger={<CreateDealOpenTrigger title={title} open={open} setOpen={setOpen} />}
-      footerActions={<DealActions actionTitle={title} onClose={() => setOpen(false)} onAction={() => setOpen(false)} />}
+      footerActions={
+        <DealActions
+          actionTitle={title}
+          onClose={() => setOpen(false)}
+          onAction={() => {
+            setOpen(false);
+            onSuccess(); // Open Deal Sent modal
+          }}
+        />
+      }
     >
       <div className="relative p-6 px-10 flex flex-row justify-between items-center w-full gap-5">
         <div className="flex flex-col gap-5 w-1/2">

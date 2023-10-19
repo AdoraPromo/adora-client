@@ -5,23 +5,25 @@ const DealActions = ({
   actionTitle,
   onAction,
 }: {
-  onClose: () => void;
-  actionTitle: string;
-  onAction: () => void;
+  onClose?: () => void;
+  actionTitle?: string;
+  onAction?: () => void;
 }) => {
   return (
     <div className="flex items-center justify-center p-6 gap-4">
-      <Button
-        classes={{
-          height: "[12px]",
-          padding: "6 py-2",
-          borderColor: "primary",
-          textColor: "primary",
-          textSize: "lg",
-        }}
-        text="Close"
-        onClick={onClose}
-      />
+      {onClose && (
+        <Button
+          classes={{
+            height: "[12px]",
+            padding: "6 py-2",
+            borderColor: "primary",
+            textColor: "primary",
+            textSize: "lg",
+          }}
+          text="Close"
+          onClick={onClose}
+        />
+      )}
       {actionTitle && (
         <Button
           classes={{
