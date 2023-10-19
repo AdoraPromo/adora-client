@@ -9,3 +9,5 @@ export interface DealType {
   maxPayment: number;
   requirements: string;
 }
+
+// const fromBlockchainToFrontendType = () => {};

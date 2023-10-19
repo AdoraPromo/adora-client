@@ -28,21 +28,27 @@ export const getColorByStatus = (status: string): string => {
 
 // Actions
 export const getActionTitleByStatus = (isSponsor: boolean, status: string) => {
-  switch (status) {
-    case DealStatus.ACCEPTED:
-      return "Redeem";
-    case DealStatus.PENDING:
-      return "Accept";
-    case DealStatus.REDEEMED:
-      return "View Tweet";
-    case DealStatus.WITHDRAWN:
-    case DealStatus.EXPIRED:
-      if (isSponsor) {
+  if (isSponsor) {
+    switch (status) {
+      case DealStatus.REDEEMED:
+        return "View Tweet";
+      case DealStatus.PENDING:
+      case DealStatus.EXPIRED:
         return "Withdraw";
-      }
-      return "";
-    default:
-      return "";
+      default:
+        return "";
+    }
+  } else {
+    switch (status) {
+      case DealStatus.ACCEPTED:
+        return "Redeem";
+      case DealStatus.PENDING:
+        return "Accept";
+      case DealStatus.REDEEMED:
+        return "View Tweet";
+      default:
+        return "";
+    }
   }
 };
 

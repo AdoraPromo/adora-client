@@ -72,7 +72,7 @@ export const Header = () => {
   );
 
   return (
-    <div className="sticky rounded-b-xl bg-neutral-content lg:static top-0 navbar flex-shrink-0 justify-between z-20 px-0 sm:px-2 box-border p-5">
+    <div className="sticky rounded-b-xl bg-neutral-content lg:static top-0 navbar flex-shrink-0 justify-between z-10 px-0 sm:px-2 box-border p-5">
       <div className="navbar-start w-auto lg:w-1/4 box-border">
         {address && (
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>

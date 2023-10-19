@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { getBaseUrl } from "~~/utils/adora/baseUrl";
 
 type MetaHeaderProps = {
   title?: string;
@@ -10,7 +11,8 @@ type MetaHeaderProps = {
 
 // Images must have an absolute path to work properly on Twitter.
 // We try to get it dynamically from Vercel, but we default to relative path.
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/` : "/";
+// const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/` : "/";
+const baseUrl = getBaseUrl();
 
 export const MetaHeader = ({
   title = "Adora.Promo",
@@ -19,7 +21,7 @@ export const MetaHeader = ({
   twitterCard = "summary_large_image",
   children,
 }: MetaHeaderProps) => {
-  const imageUrl = baseUrl + image;
+  const imageUrl = `${baseUrl}/${image}`;
 
   return (
     <Head>

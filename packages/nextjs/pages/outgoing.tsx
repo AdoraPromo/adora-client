@@ -7,23 +7,12 @@ import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import DealSentModal from "~~/components/modals/DealSentModal";
 import { DealType } from "~~/types/deal";
-import { DealStatus } from "~~/utils/adora/enums";
-import { sponsorDeals as deals } from "~~/utils/adora/mocks/data";
+import { sponsorDeals as deals, emptyDeal } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
   // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
-  const [dealCreation, setDealCreation] = useState<DealType>({
-    id: "",
-    creator: "1",
-    sponsor: "1",
-    status: DealStatus.PENDING,
-    twitterHandle: "",
-    deadline: new Date(Date.now()),
-    paymentPerThousand: 1,
-    maxPayment: 1,
-    requirements: "",
-  });
+  const [dealCreation, setDealCreation] = useState<DealType>(emptyDeal);
   const [allDeals] = useState<DealType[]>(deals);
   const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
 
@@ -52,7 +41,7 @@ const Outgoing: NextPage = () => {
           <DealSentModal
             open={dealSentModalOpen}
             setOpen={setDealSentModalOpen}
-            dealId={dealCreation?.id ? dealCreation?.id : ""}
+            dealId={dealCreation?.id ? dealCreation?.id : "3"}
           />
         </div>
         {filteredDeals.length ? (

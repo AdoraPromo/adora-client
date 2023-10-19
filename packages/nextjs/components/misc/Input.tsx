@@ -71,6 +71,7 @@ export const Input = ({
         readOnly={readOnly}
         className={inputClassesJoined}
         value={content}
+        step={type === "number" ? "0.01" : ""}
         min={type === "number" ? 0 : ""}
         onChange={setContent ? e => setContent(e.target.value) : undefined}
         placeholder={placeholder}

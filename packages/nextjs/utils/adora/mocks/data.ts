@@ -1,7 +1,7 @@
+import { DealStatus } from "../enums";
 import { DealType } from "~~/types/deal";
 
 // ADD: For mock purposes, add your wallet address here
-
 const yourAddress = "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB";
 
 export const sponsorDeals: DealType[] = [
@@ -13,7 +13,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: new Date(Date.now() + 100000),
     requirements: "",
   },
   {
@@ -141,3 +141,15 @@ export const creatorDeals: DealType[] = [
     requirements: "",
   },
 ];
+
+export const emptyDeal = {
+  id: "",
+  creator: "1",
+  sponsor: "1",
+  status: DealStatus.PENDING,
+  twitterHandle: "",
+  deadline: new Date(Date.now()),
+  paymentPerThousand: 1,
+  maxPayment: 1,
+  requirements: "",
+} as DealType;

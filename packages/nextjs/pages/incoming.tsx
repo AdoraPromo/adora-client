@@ -21,10 +21,19 @@ const Incoming: NextPage = () => {
   const [allDeals] = useState<DealType[]>(deals);
   const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
 
+  // const { address } = useGlobalState();
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+  useEffect(() => {
+    // ADD: Find incoming deals
+    // const tablelandDeals = ...
+    // setAllDeals(tablelandDeals);
+    // setFilteredDeals(tablelandDeals);
+  }, []);
 
   useEffect(() => {
     if (!status) {
@@ -42,19 +51,10 @@ const Incoming: NextPage = () => {
     }
 
     // Get ID from the URL
-    const urlParts = viewDealUrl.split("id=");
-
-    let dealId = "";
-    if (urlParts.length >= 2) {
-      dealId = urlParts[1];
-    } else {
-      notification.error("Invalid deal URL.");
-      return;
-    }
+    const dealId = getDealIdFromQueryParams(viewDealUrl);
 
     // If ID exists, move on
     if (dealId) {
-      // Find the deal
       const _dealCheck = deals.find(d => d.id === dealId);
 
       // Deal could not be found
@@ -125,6 +125,21 @@ const Incoming: NextPage = () => {
       </div>
     </>
   );
+};
+
+const getDealIdFromQueryParams = (url: string): string => {
+  const urlParts = url.split("?"); // Extract path + query params
+
+  if (urlParts.length >= 2) {
+    const dealIdParts = urlParts[1].split("="); // Get first query param
+    if (dealIdParts.length >= 2) {
+      return dealIdParts[1]; // Get ID
+    }
+  } else {
+    notification.error("Invalid deal URL.");
+  }
+
+  return "";
 };
 
 export default Incoming;

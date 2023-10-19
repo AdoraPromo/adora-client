@@ -3,6 +3,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
+import { getBaseUrl } from "~~/utils/adora/baseUrl";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface DealSentModalProps {
@@ -16,9 +17,9 @@ const DealSentModal = ({ dealId, open, setOpen }: DealSentModalProps) => {
 
   const pathname = usePathname();
 
-  // ADD: Somehow get the ID of the deal so that the link can be copied
+  // ADD: Get the ID of the deal so that the link can be copied
   const copyLinkToClipboard = () => {
-    const copyUrl = `${pathname}?id=${dealId}`;
+    const copyUrl = `${getBaseUrl()}${pathname}?id=${dealId}`;
     navigator.clipboard.writeText(copyUrl);
 
     setLinkCopied(true);

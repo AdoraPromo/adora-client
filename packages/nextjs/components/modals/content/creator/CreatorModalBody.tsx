@@ -5,7 +5,13 @@ import RequirementsReadOnlyTextArea from "../../deal-info/RequirementsReadOnlyTe
 import { DealType } from "~~/types/deal";
 import { DealStatus } from "~~/utils/adora/enums";
 
-const CreatorModalBody = ({ deal }: { deal: DealType }) => {
+interface CreatorModalBodyProps {
+  deal: DealType | undefined;
+}
+
+const CreatorModalBody = ({ deal }: CreatorModalBodyProps) => {
+  if (!deal) return null;
+
   return (
     <>
       {deal.status === DealStatus.PENDING ? (

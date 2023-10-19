@@ -5,7 +5,13 @@ import TwitterHandleReadOnlyInput from "../../deal-info/TwitterHandleReadOnlyInp
 import { DealType } from "~~/types/deal";
 import { DealStatus } from "~~/utils/adora/enums";
 
-const SponsorModalBody = ({ deal }: { deal: DealType }) => {
+interface SponsorModalBodyProps {
+  deal: DealType | undefined;
+}
+
+const SponsorModalBody = ({ deal }: SponsorModalBodyProps) => {
+  if (!deal) return null;
+
   return (
     <>
       <TwitterHandleReadOnlyInput twitterHandle={deal.twitterHandle} />

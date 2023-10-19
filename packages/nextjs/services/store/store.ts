@@ -11,10 +11,16 @@ import { create } from "zustand";
 
 type TGlobalState = {
   address: string;
+  sismoProof: string;
+
   setAddress: (newAddress: string) => void;
+  setSismoProof: (newAddress: string) => void;
 };
 
 export const useGlobalState = create<TGlobalState>(set => ({
   address: "",
+  sismoProof: "",
+
   setAddress: (newAddress: string): void => set(() => ({ address: newAddress })),
+  setSismoProof: (newSismoProof: string): void => set(() => ({ address: newSismoProof })),
 }));

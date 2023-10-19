@@ -13,7 +13,7 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
 
   return (
     <div
-      className={`flex flex-col gap-3 py-8 px-12 rounded-2xl border-solid border-2 ${color} border-info hover:cursor-pointer transition ease-in-out hover:scale-105 duration-300 bg-white`}
+      className={`flex flex-col gap-3 py-8 px-12 rounded-2xl border-solid border-2 ${color} border-info hover:cursor-pointer transition ease-in-out hover:scale-105 duration-300 bg-white bg-opacity-80`}
       onClick={() => setOpen && setOpen(!open)}
     >
       <div className="flex flex-col gap-1">

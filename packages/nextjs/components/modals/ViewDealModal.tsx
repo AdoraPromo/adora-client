@@ -17,8 +17,10 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const { address } = useGlobalState();
+  const { address, setSismoProof } = useGlobalState();
   const [open, setOpen] = useState(false);
+  // Set initial state to be the encrypted deal
+  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
 
   const setOpenWithQueryParams = (open: boolean) => {
     if (!deal) return;
@@ -36,9 +38,22 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   };
 
   useEffect(() => {
+    if (open && deal) {
+      // ADD: Do the deal decryption here
+      const _decryptedDeal: DealType = { ...deal, requirements: "i've decrypted this deal" };
+      setDecryptedDeal(_decryptedDeal);
+    }
+  }, [open, deal]);
+
+  useEffect(() => {
     // If modal isn't open and we have the required deal, open modal
     if (!open && deal && current.get("id") === deal.id) {
       setOpenWithQueryParams(true);
+    }
+
+    if (current.get("sismoProof")) {
+      // ADD: Do something with the Sismo proof
+      setSismoProof(current.get("sismoProof") || "");
     }
   }, [searchParams]); // eslint-disable-line
 
@@ -52,13 +67,13 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
       setOpen={setOpenWithQueryParams}
       footerActions={
         !deal ? null : isSponsor ? (
-          <SponsorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
+          <SponsorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
-          <CreatorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
+          <CreatorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         )
       }
     >
-      {!deal ? null : isSponsor ? <SponsorModalBody deal={deal} /> : <CreatorModalBody deal={deal} />}
+      {!deal ? null : isSponsor ? <SponsorModalBody deal={decryptedDeal} /> : <CreatorModalBody deal={decryptedDeal} />}
     </Modal>
   );
 };
