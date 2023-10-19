@@ -16,7 +16,7 @@ const Home: NextPage = () => {
     <>
       <MetaHeader />
       <div
-        style={{ backgroundImage: `url('/assets/background.png')` }}
+        style={{ backgroundImage: `url('/assets/background.svg')` }}
         className="h-full flex items-center justify-center flex-col flex-grow pb-60 gap-10 min-h-screen bg-cover bg-center"
       >
         <div className="flex flex-col items-center gap-4">
@@ -27,19 +27,6 @@ const Home: NextPage = () => {
             Connect your Wallet <span>to get started!</span>
           </div>
         </div>
-        {/* <Button
-            classes={{
-              width: "1/4",
-              height: "36",
-              padding: "5",
-              bgColor: "primary",
-              textColor: "accent",
-              textSize: "2xl",
-              fontWeight: "bold",
-            }}
-            text="Connect Wallet"
-            onClick={() => notification.loading("Connecting Wallet...")}
-          /> */}
       </div>
     </>
   );

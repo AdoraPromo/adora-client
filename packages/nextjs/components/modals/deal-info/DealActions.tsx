@@ -1,3 +1,5 @@
+import { useState } from "react";
+import ProgressModal from "../ProgressModal";
 import RedeemDealModal from "../RedeemDealModal";
 import { Button } from "~~/components/misc/Button";
 import { DealType } from "~~/types/deal";
@@ -14,6 +16,8 @@ interface DealActionsProps {
 }
 
 const DealActions = ({ deal, onClose, actionTitle, onAction, openRedeemModal }: DealActionsProps) => {
+  const [openProgressModal, setOpenProgressModal] = useState(false);
+
   return (
     <div className="flex items-center justify-center p-6 gap-4">
       {onClose && (
@@ -45,7 +49,15 @@ const DealActions = ({ deal, onClose, actionTitle, onAction, openRedeemModal }: 
             onClick={onAction}
           />
           {actionTitle === ActionType.REDEEM && (
-            <RedeemDealModal deal={deal} open={openRedeemModal ? openRedeemModal : false} setOpen={onAction} />
+            <>
+              <RedeemDealModal
+                deal={deal}
+                open={openRedeemModal ? openRedeemModal : false}
+                setOpen={onAction}
+                setOpenProgressModal={setOpenProgressModal}
+              />
+              <ProgressModal deal={deal} open={openProgressModal} setOpen={setOpenProgressModal} />
+            </>
           )}
         </>
       )}

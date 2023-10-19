@@ -75,7 +75,7 @@ const Incoming: NextPage = () => {
     <>
       <MetaHeader title="Incoming Deals - Adora.Promo" />
       <div
-        style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
+        style={{ backgroundImage: `url('/assets/background-minimal.svg')` }}
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Incoming Deals</div>
@@ -117,9 +117,11 @@ const Incoming: NextPage = () => {
           <div className="flex flex-col justify-center items-center w-full gap-10 p-10">
             <div className="flex flex-col justify-center items-center w-full text-2xl">
               <div>This Page is Empty.</div>
-              <div>Expect new deals soon!</div>
+              <div>
+                Start with <b>View Deal</b>!
+              </div>
             </div>
-            <Image src={"/assets/empty-incoming.png"} alt="empty-incoming" width={548} height={400} />
+            <Image src={"/assets/empty-incoming.svg"} alt="empty-incoming" width={450} height={300} />
           </div>
         )}
       </div>

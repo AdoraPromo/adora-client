@@ -3,20 +3,22 @@ import { Input } from "../misc/Input";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
 import { DealType } from "~~/types/deal";
-import { notification } from "~~/utils/scaffold-eth";
 
 interface RedeemDealModalProps {
   deal: DealType | undefined;
   open: boolean;
   setOpen: (open: boolean) => void;
+  setOpenProgressModal: (open: boolean) => void;
 }
 
-const RedeemDealModal = ({ deal, open, setOpen }: RedeemDealModalProps) => {
+const RedeemDealModal = ({ deal, open, setOpen, setOpenProgressModal }: RedeemDealModalProps) => {
   const [tweetLink, setTweetLink] = useState("");
 
   // ADD: Deal redemption logic
   const redeemDeal = () => {
-    notification.info("Deal redeem logic: " + tweetLink);
+    // Keep these two at the end
+    setOpen(false); // Close Redeem modal (maybe?)
+    setOpenProgressModal(true); // Open Progress modal
   };
 
   if (!deal) return null;
