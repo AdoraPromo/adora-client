@@ -117,7 +117,7 @@ const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
         router.reload();
       }
     }, 6000);
-  }, [activeStep]);
+  }, [activeStep, router, pathname]);
 
   return (
     <Modal open={open} setOpen={setOpen} footerActions={<DealActions onClose={() => setOpen(false)} />} width="1/2">
