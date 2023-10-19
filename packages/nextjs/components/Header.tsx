@@ -72,7 +72,7 @@ export const Header = () => {
   );
 
   return (
-    <div className="sticky rounded-b-xl bg-neutral-content lg:static top-0 navbar flex-shrink-0 justify-between z-10 px-0 sm:px-2 box-border p-5">
+    <div className="sticky rounded-b-xl bg-[#28112B] lg:static top-0 navbar flex-shrink-0 justify-between z-10 px-0 sm:px-2 box-border p-5">
       <div className="navbar-start w-auto lg:w-1/4 box-border">
         {address && (
           <div className="lg:hidden dropdown" ref={burgerMenuRef}>
@@ -100,7 +100,7 @@ export const Header = () => {
           </div>
         )}
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-8 shrink-0">
-          <div className="text-3xl font-bold text-primary">Adora.Promo</div>
+          <div className="text-3xl font-bold text-[#CD98C4]">Adora.Promo</div>
         </Link>
       </div>
       <div className="navbar-end justify-end mr-4 lg:w-2/3">

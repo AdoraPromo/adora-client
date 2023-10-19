@@ -10,8 +10,6 @@ import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 
 const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealType }) => {
-  const title = "View Deal";
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -62,7 +60,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   return (
     <Modal
       openTrigger={<>{React.cloneElement(children, { open, setOpen: setOpenWithQueryParams })}</>}
-      title={title}
+      title={"View Deal"}
       open={open}
       setOpen={setOpenWithQueryParams}
       footerActions={

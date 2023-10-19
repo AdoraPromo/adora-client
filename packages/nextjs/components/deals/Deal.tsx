@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Status from "./Status";
 import { DealType } from "~~/types/deal";
 import { getCustomColorByStatus } from "~~/utils/adora/getByStatus";
@@ -27,7 +28,10 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
           @{deal.twitterHandle}
         </a>
         <div className="flex flex-row gap-3 w-52">
-          <div className="flex flex-row w-3/5">{getRemainingTime(deal.deadline)}</div>
+          <div className="flex flex-row w-3/5 gap-1 items-center justify-start">
+            <Image src="/assets/hourglass.svg" alt="hourglass" height={18} width={12} />
+            {getRemainingTime(deal.deadline)}
+          </div>
           <span>|</span>
           <div className="w-2/5">{deal.maxPayment} APE</div>
         </div>

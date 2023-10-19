@@ -31,7 +31,7 @@ const Outgoing: NextPage = () => {
     <>
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
       <div
-        style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
+        style={{ backgroundImage: `url('/assets/background-minimal.svg')` }}
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
@@ -54,7 +54,7 @@ const Outgoing: NextPage = () => {
                 Start with <b>Create Deal</b>!
               </div>
             </div>
-            <Image src={"/assets/empty-outgoing.png"} alt="empty-outgoing" width={400} height={400} />
+            <Image src={"/assets/empty-outgoing.svg"} alt="empty-outgoing" width={350} height={350} />
           </div>
         )}
       </div>

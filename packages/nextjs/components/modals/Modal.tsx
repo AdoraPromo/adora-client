@@ -4,7 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 interface ModalProps {
   children: JSX.Element | JSX.Element[] | null;
   openTrigger?: JSX.Element;
-  footerActions: JSX.Element | JSX.Element[] | null;
+  footerActions?: JSX.Element | JSX.Element[] | null;
   title?: string;
   open: boolean;
   width?: string;

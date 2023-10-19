@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DealActions from "../../deal-info/DealActions";
 import { DealType } from "~~/types/deal";
 import { ActionType } from "~~/utils/adora/enums";
@@ -9,32 +10,33 @@ interface CreatorModalActionsProps {
   onClose: () => void;
 }
 
-// ADD: Based on the action, add a function to perform upon clicking the action button
-const getCreatorsActionCallback = (action: string) => {
-  switch (action) {
-    case ActionType.ACCEPT:
-      return function () {
-        notification.info("Create action for Accept");
-      };
-    case ActionType.REDEEM:
-      return function () {
-        notification.info("Create action for Redeem");
-      };
-    case ActionType.VIEWTWEET:
-      return function () {
-        notification.info("Create action for View Tweet");
-      };
-    default:
-      return function () {
-        notification.info("Default action - should not be reached");
-      };
-  }
-};
-
 const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
-  if (!deal) return null;
+  const [openRedeemModal, setOpenRedeemModal] = useState(false);
+  const creatorAction = getActionTitleByStatus(false, deal?.status || "");
 
-  const creatorAction = getActionTitleByStatus(false, deal.status);
+  // ADD: Based on the action, add a function to perform upon clicking the action button
+  const getCreatorsActionCallback = (action: string) => {
+    switch (action) {
+      case ActionType.ACCEPT:
+        return function () {
+          notification.info("Create action for Accept");
+        };
+      case ActionType.REDEEM:
+        return function () {
+          setOpenRedeemModal(!openRedeemModal);
+        };
+      case ActionType.VIEWTWEET:
+        return function () {
+          notification.info("Create action for View Tweet");
+        };
+      default:
+        return function () {
+          notification.info("Default action - should not be reached");
+        };
+    }
+  };
+
+  if (!deal) return null;
 
   return (
     <DealActions
@@ -42,6 +44,7 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
       onClose={onClose}
       actionTitle={creatorAction}
       onAction={getCreatorsActionCallback(creatorAction)}
+      openRedeemModal={openRedeemModal}
     />
   );
 };
