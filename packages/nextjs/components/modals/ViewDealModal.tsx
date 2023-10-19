@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import Modal from "./Modal";
@@ -31,6 +31,12 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal: DealTy
 
     router.push(`${pathname}${query}`);
   };
+
+  useEffect(() => {
+    if (!open && current.get("id") === deal.id) {
+      setOpenWithQueryParams(true);
+    }
+  }, [searchParams]);
 
   return (
     <Modal
