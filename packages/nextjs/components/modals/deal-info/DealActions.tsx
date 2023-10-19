@@ -1,15 +1,19 @@
+import RedeemDealModal from "../RedeemDealModal";
 import { Button } from "~~/components/misc/Button";
 import { DealType } from "~~/types/deal";
+import { ActionType } from "~~/utils/adora/enums";
 import { getCustomColorByAction } from "~~/utils/adora/getByStatus";
 
 interface DealActionsProps {
   deal?: DealType;
   onClose?: () => void;
   actionTitle?: string;
-  onAction?: () => void;
+  onAction?: any;
+
+  openRedeemModal?: boolean; // Not the cleanest solution, but hey
 }
 
-const DealActions = ({ onClose, actionTitle, onAction }: DealActionsProps) => {
+const DealActions = ({ deal, onClose, actionTitle, onAction, openRedeemModal }: DealActionsProps) => {
   return (
     <div className="flex items-center justify-center p-6 gap-4">
       {onClose && (
@@ -27,18 +31,23 @@ const DealActions = ({ onClose, actionTitle, onAction }: DealActionsProps) => {
         />
       )}
       {actionTitle && (
-        <Button
-          classes={{
-            width: "auto",
-            height: "[12px]",
-            padding: "5 py-2",
-            bgColor: getCustomColorByAction("bg", actionTitle),
-            textColor: "accent",
-            textSize: "lg",
-          }}
-          text={actionTitle}
-          onClick={onAction}
-        />
+        <>
+          <Button
+            classes={{
+              width: "auto",
+              height: "[12px]",
+              padding: "5 py-2",
+              bgColor: getCustomColorByAction("bg", actionTitle),
+              textColor: "accent",
+              textSize: "lg",
+            }}
+            text={actionTitle}
+            onClick={onAction}
+          />
+          {actionTitle === ActionType.REDEEM && (
+            <RedeemDealModal deal={deal} open={openRedeemModal ? openRedeemModal : false} setOpen={onAction} />
+          )}
+        </>
       )}
     </div>
   );
