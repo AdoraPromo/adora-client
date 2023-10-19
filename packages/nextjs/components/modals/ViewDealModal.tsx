@@ -25,7 +25,8 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
 
     setOpen(open);
     if (open) {
-      current.set("id", deal.id);
+      // TODO: Handle missing ID error
+      deal.id && current.set("id", deal.id);
     } else {
       current.delete("id");
     }

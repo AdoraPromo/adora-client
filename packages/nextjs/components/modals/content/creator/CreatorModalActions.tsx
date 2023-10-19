@@ -20,8 +20,8 @@ const CreatorModalActions = ({ deal, onClose }: { deal: DealType; onClose: () =>
   return (
     <DealActions
       onClose={onClose}
-      actionTitle={getActionTitle(deal.status)}
-      onAction={() => notification.info("Create action for " + getActionTitle(deal.status))}
+      actionTitle={getActionTitle(deal.status || "")}
+      onAction={() => notification.info("Create action for " + getActionTitle(deal.status || ""))}
     />
   );
 };

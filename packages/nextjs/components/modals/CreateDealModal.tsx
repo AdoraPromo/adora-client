@@ -5,6 +5,7 @@ import { TextArea } from "../misc/TextArea";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
 import { DealType } from "~~/types/deal";
+import { notification } from "~~/utils/scaffold-eth";
 
 const CreateDealOpenTrigger = ({
   title,
@@ -31,18 +32,46 @@ const CreateDealOpenTrigger = ({
   );
 };
 
-export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
-  const [deal, setDeal] = useState({
-    deadline: new Date(Date.now()),
-  } as DealType);
-  const [open, setOpen] = useState(false);
+interface CreateDealModalProps {
+  deal: DealType;
+  setDeal: (deal: DealType) => void;
+  onSuccess: () => void;
+}
+
+export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalProps) {
   const title = "Create Deal";
 
-  const updateTwitterHandle = (newHandle: string) => setDeal({ ...deal, twitterHandle: newHandle });
-  const updateDeadline = (newDeadline: Date) => setDeal({ ...deal, deadline: newDeadline });
-  const updatePaymentPerThousand = (newPaymentPerThousand: number) =>
+  const [open, setOpen] = useState(false);
+
+  // Update states
+  const updateTwitterHandle = (newHandle: string) => {
+    setDeal({ ...deal, twitterHandle: newHandle });
+  };
+  const updateDeadline = (newDeadline: Date) => {
+    setDeal({ ...deal, deadline: newDeadline });
+  };
+  const updatePaymentPerThousand = (newPaymentPerThousand: number) => {
     setDeal({ ...deal, paymentPerThousand: newPaymentPerThousand });
-  const updateMaximumPayment = (newMaximumPayment: number) => setDeal({ ...deal, maxPayment: newMaximumPayment });
+  };
+  const updateMaximumPayment = (newMaximumPayment: number) => {
+    setDeal({ ...deal, maxPayment: newMaximumPayment });
+  };
+  const updateRequirements = (newRequirements: string) => {
+    setDeal({ ...deal, requirements: newRequirements });
+  };
+
+  // ADD: Deal creation logic
+  const createDeal = () => {
+    const isDealCreated = true;
+
+    notification.info("ADD: Deal creation logic");
+
+    // Note: Keep these at the end
+    if (isDealCreated) {
+      setOpen(false); // Closes 'Create Deal' modal
+      onSuccess(); // Opens 'Deal Sent' modal
+    }
+  };
 
   return (
     <Modal
@@ -50,22 +79,13 @@ export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
       open={open}
       setOpen={setOpen}
       openTrigger={<CreateDealOpenTrigger title={title} open={open} setOpen={setOpen} />}
-      footerActions={
-        <DealActions
-          actionTitle={title}
-          onClose={() => setOpen(false)}
-          onAction={() => {
-            setOpen(false);
-            onSuccess(); // Open Deal Sent modal
-          }}
-        />
-      }
+      footerActions={<DealActions actionTitle={title} onClose={() => setOpen(false)} onAction={createDeal} />}
     >
       <div className="relative p-6 px-10 flex flex-row justify-between items-center w-full gap-5">
         <div className="flex flex-col gap-5 w-1/2">
           <Input
             full
-            content={deal.twitterHandle}
+            content={deal?.twitterHandle}
             setContent={updateTwitterHandle}
             placeholder={"Paste the link here..."}
             type={"string"}
@@ -81,7 +101,7 @@ export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
           />
           <Input
             full
-            content={deal.deadline}
+            content={deal?.deadline}
             placeholder="MM/DD/YYYY"
             setContent={updateDeadline}
             type={"date"}
@@ -112,7 +132,7 @@ export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
           />
           <Input
             full
-            content={deal.paymentPerThousand}
+            content={deal?.paymentPerThousand}
             setContent={updatePaymentPerThousand}
             placeholder={"Type here..."}
             type={"number"}
@@ -128,7 +148,7 @@ export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
           />
           <Input
             full
-            content={deal.maxPayment}
+            content={deal?.maxPayment}
             setContent={updateMaximumPayment}
             placeholder={"Type here..."}
             type={"number"}
@@ -146,8 +166,8 @@ export function CreateDealModal({ onSuccess }: { onSuccess: () => void }) {
         <div className="flex flex-col w-1/2 h-full">
           <TextArea
             full
-            content={deal.requirements}
-            setContent={(e: any) => setDeal({ ...deal, requirements: e.target.value })}
+            content={deal?.requirements}
+            setContent={updateRequirements}
             placeholder={"Write all your requirements here. Try to be very clear and specific..."}
             label={"Requirements"}
             rows={16}

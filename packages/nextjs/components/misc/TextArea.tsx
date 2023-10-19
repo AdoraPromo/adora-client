@@ -66,7 +66,7 @@ export const TextArea = ({
         rows={rows || 10}
         className={textAreaClassesJoined}
         value={content}
-        onChange={setContent}
+        onChange={setContent ? e => setContent(e.target.value) : undefined}
         placeholder={placeholder}
       />
     </div>

@@ -1,21 +1,19 @@
 import React, { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
-const Modal = ({
-  children,
-  openTrigger,
-  footerActions,
-  title,
-  open,
-  setOpen,
-}: {
+interface ModalProps {
   children: JSX.Element | JSX.Element[] | null;
   openTrigger?: JSX.Element;
   footerActions: JSX.Element | JSX.Element[] | null;
-  title: string;
+  title?: string;
   open: boolean;
+  width?: string;
   setOpen: (open: boolean) => void;
-}) => {
+}
+
+const Modal = ({ children, openTrigger, footerActions, title, open, width, setOpen }: ModalProps) => {
+  const setWidth = width || "2/3";
+
   return (
     <>
       {openTrigger}
@@ -44,10 +42,14 @@ const Modal = ({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="flex flex-col justify-center items-center w-2/3 transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title as="h1" className="text-2xl text-neutral font-bold">
-                    {title}
-                  </Dialog.Title>
+                <Dialog.Panel
+                  className={`flex flex-col justify-center items-center w-${setWidth} transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
+                >
+                  {title && (
+                    <Dialog.Title as="h1" className="text-2xl text-neutral font-bold">
+                      {title}
+                    </Dialog.Title>
+                  )}
                   {/*body*/}
                   {children}
                   {/*footer*/}
