@@ -9,10 +9,7 @@ interface DealActionsProps {
   onAction?: () => void;
 }
 
-const DealActions = ({ deal, onClose, actionTitle, onAction }: DealActionsProps) => {
-  console.log(deal);
-  console.log("~~~~~~~~");
-
+const DealActions = ({ onClose, actionTitle, onAction }: DealActionsProps) => {
   return (
     <div className="flex items-center justify-center p-6 gap-4">
       {onClose && (

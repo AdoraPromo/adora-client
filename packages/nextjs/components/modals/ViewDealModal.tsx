@@ -52,9 +52,9 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
       setOpen={setOpenWithQueryParams}
       footerActions={
         !deal ? null : isSponsor ? (
-          <SponsorModalActions isSponsor={true} deal={deal} onClose={() => setOpenWithQueryParams(false)} />
+          <SponsorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
-          <CreatorModalActions isSponsor={false} deal={deal} onClose={() => setOpenWithQueryParams(false)} />
+          <CreatorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
         )
       }
     >
