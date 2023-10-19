@@ -19,14 +19,9 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
     >
       <div className="flex flex-col gap-1">
         <Status value={deal.status} />
-        <a
-          className="underline text-info hover:cursor-pointer transition ease-in-out hover:opacity-75 duration-100"
-          href={`https://twitter.com/${deal.twitterHandle}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          @{deal.twitterHandle}
-        </a>
+        <div>
+          ID: <span>{deal.id}</span>
+        </div>
         <div className="flex flex-row gap-3 w-52">
           <div className="flex flex-row w-3/5 gap-1 items-center justify-start">
             <Image src="/assets/hourglass.svg" alt="hourglass" height={18} width={12} />
