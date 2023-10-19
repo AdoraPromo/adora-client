@@ -3,6 +3,7 @@ import { TextArea } from "~~/components/misc/TextArea";
 const RequirementsReadOnlyTextArea = ({ content }: { content: string }) => {
   return (
     <TextArea
+      readOnly
       content={content}
       label={"Requirements"}
       rows={16}

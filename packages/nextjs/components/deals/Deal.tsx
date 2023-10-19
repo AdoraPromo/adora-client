@@ -63,7 +63,7 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
         </a>
         <div className="flex flex-row gap-3 w-52">
           <div className="flex flex-row w-3/5">{getRemainingTime(deal.deadline)}</div>
-          <div>|</div>
+          <span>|</span>
           <div className="w-2/5">{deal.maxPayment} APE</div>
         </div>
       </div>

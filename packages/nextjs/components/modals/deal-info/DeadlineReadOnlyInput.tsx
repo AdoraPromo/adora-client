@@ -3,6 +3,7 @@ import { Input } from "~~/components/misc/Input";
 const DeadlineReadOnlyInput = ({ deadline }: { deadline: Date }) => {
   return (
     <Input
+      readOnly
       content={deadline}
       type={"date"}
       label={"Deadline"}

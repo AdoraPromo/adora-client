@@ -3,6 +3,7 @@ import { Input } from "~~/components/misc/Input";
 const ReadOnlyInput = ({ label, content }: { label: string; content: string }) => {
   return (
     <Input
+      readOnly
       full
       content={content}
       type={"string"}

@@ -9,9 +9,9 @@ const Modal = ({
   open,
   setOpen,
 }: {
-  children: JSX.Element | JSX.Element[];
+  children: JSX.Element | JSX.Element[] | null;
   openTrigger?: JSX.Element;
-  footerActions: JSX.Element | JSX.Element[];
+  footerActions: JSX.Element | JSX.Element[] | null;
   title: string;
   open: boolean;
   setOpen: (open: boolean) => void;

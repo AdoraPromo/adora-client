@@ -9,7 +9,9 @@ import SponsorModalBody from "./content/sponsor/SponsorModalBody";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 
-const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal: DealType }) => {
+const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealType }) => {
+  const title = "View Deal";
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -17,9 +19,10 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal: DealTy
 
   const { address } = useGlobalState();
   const [open, setOpen] = useState(false);
-  const title = "View Deal";
 
   const setOpenWithQueryParams = (open: boolean) => {
+    if (!deal) return;
+
     setOpen(open);
     if (open) {
       current.set("id", deal.id);
@@ -28,15 +31,15 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal: DealTy
     }
 
     const query = current.toString() ? `?${current.toString()}` : "";
-
     router.push(`${pathname}${query}`);
   };
 
   useEffect(() => {
-    if (!open && current.get("id") === deal.id) {
+    // If modal isn't open and we have the required deal, open modal
+    if (!open && deal && current.get("id") === deal.id) {
       setOpenWithQueryParams(true);
     }
-  }, [searchParams]);
+  }, [searchParams]); // eslint-disable-line
 
   return (
     <Modal
@@ -45,14 +48,14 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal: DealTy
       open={open}
       setOpen={setOpenWithQueryParams}
       footerActions={
-        deal.sponsor === address ? (
+        !deal ? null : deal.sponsor === address ? (
           <SponsorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
           <CreatorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
         )
       }
     >
-      {deal.sponsor === address ? <SponsorModalBody deal={deal} /> : <CreatorModalBody deal={deal} />}
+      {!deal ? null : deal.sponsor === address ? <SponsorModalBody deal={deal} /> : <CreatorModalBody deal={deal} />}
     </Modal>
   );
 };

@@ -1,89 +1,30 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { Button } from "~~/components/misc/Button";
 import { Input } from "~~/components/misc/Input";
+import ViewDealModal from "~~/components/modals/ViewDealModal";
 import { DealType } from "~~/types/deal";
+import { deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
-  const deals: DealType[] = [
-    {
-      id: "1",
-      sponsor: "0x123",
-      creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Accepted",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "2",
-      sponsor: "0x123",
-      creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Withdrawn",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "3",
-      sponsor: "0x123",
-      creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Pending",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "4",
-      sponsor: "0x123",
-      creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Expired",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "5",
-      sponsor: "0x123",
-      creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Redeemed",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "6",
-      sponsor: "0x123",
-      creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Accepted",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-  ];
-
   // TODO: Sort deals by expiration date
   const [viewDealUrl, setViewDealUrl] = useState("");
   const [status, setStatus] = useState("");
-  const [allDeals] = useState(deals);
-  const [filteredDeals, setFilteredDeals] = useState(deals);
+  const [viewDeal, setViewDeal] = useState<DealType>();
+  const [allDeals] = useState<DealType[]>(deals);
+  const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
 
   useEffect(() => {
     if (!status) {
@@ -94,8 +35,44 @@ const Incoming: NextPage = () => {
     setFilteredDeals(allDeals.filter((deal: any) => deal?.status === status));
   }, [status, allDeals]);
 
+  const onClickViewDeal = () => {
+    if (!viewDealUrl) {
+      notification.warning("Please insert deal's URL.");
+      return;
+    }
+
+    // Get ID from the URL
+    const urlParts = viewDealUrl.split("id=");
+
+    let dealId = "";
+    if (urlParts.length >= 2) {
+      dealId = urlParts[1];
+    } else {
+      notification.error("Invalid deal URL.");
+      return;
+    }
+
+    // If ID exists, move on
+    if (dealId) {
+      // Find the deal
+      const _dealCheck = deals.find(d => d.id === dealId);
+
+      // Deal could not be found
+      if (!_dealCheck) {
+        notification.error("Deal with ID '" + dealId + "' does not exist!");
+        return;
+      } else {
+        // Deal is found
+        setViewDeal(_dealCheck);
+      }
+
+      current.set("id", dealId);
+      router.push(`${pathname}?${current.toString()}`);
+    }
+  };
+
   return (
-    <div>
+    <>
       <MetaHeader title="Incoming Deals - Adora.Promo" />
       <div
         style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
@@ -119,6 +96,9 @@ const Incoming: NextPage = () => {
                 hover: "transition hover:border-2 hover:border-accent-content duration-300",
               }}
             />
+            <ViewDealModal deal={viewDeal}>
+              <></>
+            </ViewDealModal>
             <Button
               classes={{
                 width: "auto",
@@ -129,7 +109,7 @@ const Incoming: NextPage = () => {
                 textSize: "lg",
               }}
               text="View Deal"
-              onClick={() => notification.info("View Deal")}
+              onClick={onClickViewDeal}
             />
           </div>
         </div>
@@ -144,7 +124,7 @@ const Incoming: NextPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

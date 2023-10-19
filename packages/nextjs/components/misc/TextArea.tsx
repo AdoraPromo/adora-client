@@ -18,9 +18,19 @@ export interface TextAreaProps {
   placeholder?: any;
   label?: string;
   rows: number;
+  readOnly?: boolean;
 }
 
-export const TextArea = ({ full, content, setContent, placeholder, label, rows, classes: classes }: TextAreaProps) => {
+export const TextArea = ({
+  full,
+  content,
+  setContent,
+  placeholder,
+  label,
+  rows,
+  readOnly,
+  classes: classes,
+}: TextAreaProps) => {
   const _textAreaClasses = {
     padding: classes?.padding ? `p-${classes?.padding}` : "",
     borderColor: classes?.borderColor
@@ -52,6 +62,7 @@ export const TextArea = ({ full, content, setContent, placeholder, label, rows, 
     <div className={wrapperClassesJoined}>
       {label && <label className="text-neutral font-bold">{label}</label>}
       <textarea
+        readOnly={readOnly}
         rows={rows || 10}
         className={textAreaClassesJoined}
         value={content}

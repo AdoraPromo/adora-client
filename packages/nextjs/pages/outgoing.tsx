@@ -6,78 +6,9 @@ import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import DealSentModal from "~~/components/modals/DealSentModal";
-import { DealType } from "~~/types/deal";
+import { deals } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
-  const deals: DealType[] = [
-    {
-      id: "1",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Accepted",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "2",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Withdrawn",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "3",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Pending",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "4",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Expired",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "5",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Redeemed",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-    {
-      id: "6",
-      creator: "0x123",
-      sponsor: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
-      status: "Accepted",
-      twitterHandle: "twitteraccount",
-      paymentPerThousand: 10,
-      maxPayment: 1000,
-      deadline: new Date(),
-      requirements: "",
-    },
-  ];
-
   // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
   const [allDeals] = useState(deals);
@@ -97,14 +28,13 @@ const Outgoing: NextPage = () => {
   // TODO: Add different background image than for root
 
   return (
-    <div>
+    <>
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
       <div
         style={{ backgroundImage: `url('/assets/background-minimal.png')` }}
         className="flex flex-col items-start w-full h-full p-10 text-neutral gap-8 min-h-screen bg-cover bg-center"
       >
         <div className="text-3xl font-bold w-full flex flex-col items-center">Outgoing Deals</div>
-        <div></div>
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
           <CreateDealModal onSuccess={() => setDealSentModalOpen(true)} />
@@ -124,7 +54,7 @@ const Outgoing: NextPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
