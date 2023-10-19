@@ -10,7 +10,7 @@ import { Button } from "~~/components/misc/Button";
 import { Input } from "~~/components/misc/Input";
 import ViewDealModal from "~~/components/modals/ViewDealModal";
 import { DealType } from "~~/types/deal";
-import { deals } from "~~/utils/adora/mocks/data";
+import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
@@ -104,7 +104,6 @@ const Incoming: NextPage = () => {
                 width: "auto",
                 height: "[12px]",
                 padding: "5 py-2",
-                bgColor: "primary",
                 textColor: "accent",
                 textSize: "lg",
               }}

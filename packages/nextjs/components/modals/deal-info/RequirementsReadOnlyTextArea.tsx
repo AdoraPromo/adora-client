@@ -6,7 +6,7 @@ const RequirementsReadOnlyTextArea = ({ content }: { content: string }) => {
       readOnly
       content={content}
       label={"Requirements"}
-      rows={16}
+      rows={10}
       classes={{
         padding: "2 px-4",
         textColor: "neutral",

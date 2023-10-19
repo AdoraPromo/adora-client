@@ -1,7 +1,7 @@
 import DeadlineReadOnlyInput from "../deal-info/DeadlineReadOnlyInput";
 import ReadOnlyInput from "../deal-info/ReadOnlyInput";
 import StatusReadOnlyInput from "../deal-info/StatusReadOnlyInput";
-import { DealStatus } from "~~/components/deals/Status";
+import { DealStatus } from "~~/utils/adora/enums";
 
 interface StatusDeadlineWithdrawalAmountProps {
   status: DealStatus;

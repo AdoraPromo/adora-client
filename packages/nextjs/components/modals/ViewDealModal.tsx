@@ -42,6 +42,8 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
     }
   }, [searchParams]); // eslint-disable-line
 
+  const isSponsor = deal && deal.sponsor === address;
+
   return (
     <Modal
       openTrigger={<>{React.cloneElement(children, { open, setOpen: setOpenWithQueryParams })}</>}
@@ -49,14 +51,14 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
       open={open}
       setOpen={setOpenWithQueryParams}
       footerActions={
-        !deal ? null : deal.sponsor === address ? (
-          <SponsorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
+        !deal ? null : isSponsor ? (
+          <SponsorModalActions isSponsor={true} deal={deal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
-          <CreatorModalActions deal={deal} onClose={() => setOpenWithQueryParams(false)} />
+          <CreatorModalActions isSponsor={false} deal={deal} onClose={() => setOpenWithQueryParams(false)} />
         )
       }
     >
-      {!deal ? null : deal.sponsor === address ? <SponsorModalBody deal={deal} /> : <CreatorModalBody deal={deal} />}
+      {!deal ? null : isSponsor ? <SponsorModalBody deal={deal} /> : <CreatorModalBody deal={deal} />}
     </Modal>
   );
 };

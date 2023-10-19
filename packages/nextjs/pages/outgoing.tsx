@@ -3,12 +3,12 @@ import Image from "next/image";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
-import { DealStatus } from "~~/components/deals/Status";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import DealSentModal from "~~/components/modals/DealSentModal";
 import { DealType } from "~~/types/deal";
-import { deals } from "~~/utils/adora/mocks/data";
+import { DealStatus } from "~~/utils/adora/enums";
+import { sponsorDeals as deals } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
   // TODO: Sort deals by expiration date

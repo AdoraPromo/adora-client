@@ -1,10 +1,83 @@
 import { DealType } from "~~/types/deal";
 
-export const deals: DealType[] = [
+// ADD: For mock purposes, add your wallet address here
+
+const yourAddress = "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB";
+
+export const sponsorDeals: DealType[] = [
+  {
+    id: "1",
+    creator: "0x123",
+    sponsor: yourAddress,
+    status: "Accepted",
+    twitterHandle: "twitteraccount",
+    paymentPerThousand: 10,
+    maxPayment: 1000,
+    deadline: new Date(),
+    requirements: "",
+  },
+  {
+    id: "2",
+    creator: "0x123",
+    sponsor: yourAddress,
+    status: "Withdrawn",
+    twitterHandle: "twitteraccount",
+    paymentPerThousand: 10,
+    maxPayment: 1000,
+    deadline: new Date(),
+    requirements: "",
+  },
+  {
+    id: "3",
+    creator: "0x123",
+    sponsor: yourAddress,
+    status: "Pending",
+    twitterHandle: "twitteraccount",
+    paymentPerThousand: 10,
+    maxPayment: 1000,
+    deadline: new Date(),
+    requirements: "",
+  },
+  {
+    id: "4",
+    creator: "0x123",
+    sponsor: yourAddress,
+    status: "Expired",
+    twitterHandle: "twitteraccount",
+    paymentPerThousand: 10,
+    maxPayment: 1000,
+    deadline: new Date(),
+    requirements: "",
+  },
+  {
+    id: "5",
+    creator: "0x123",
+    sponsor: yourAddress,
+    status: "Redeemed",
+    twitterHandle: "twitteraccount",
+    paymentPerThousand: 10,
+    maxPayment: 1000,
+    deadline: new Date(),
+    requirements: "",
+  },
+  {
+    id: "6",
+    creator: "0x123",
+    sponsor: yourAddress,
+    status: "Accepted",
+    twitterHandle: "twitteraccount",
+    paymentPerThousand: 10,
+    maxPayment: 1000,
+    deadline: new Date(),
+    requirements: "",
+  },
+];
+
+export const creatorDeals: DealType[] = [
   {
     id: "1",
     sponsor: "0x123",
-    creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
+    creator: yourAddress,
     status: "Accepted",
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
@@ -15,7 +88,7 @@ export const deals: DealType[] = [
   {
     id: "2",
     sponsor: "0x123",
-    creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
+    creator: yourAddress,
     status: "Withdrawn",
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
@@ -26,7 +99,7 @@ export const deals: DealType[] = [
   {
     id: "3",
     sponsor: "0x123",
-    creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
+    creator: yourAddress,
     status: "Pending",
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
@@ -37,7 +110,7 @@ export const deals: DealType[] = [
   {
     id: "4",
     sponsor: "0x123",
-    creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
+    creator: yourAddress,
     status: "Expired",
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
@@ -48,7 +121,7 @@ export const deals: DealType[] = [
   {
     id: "5",
     sponsor: "0x123",
-    creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
+    creator: yourAddress,
     status: "Redeemed",
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
@@ -59,7 +132,7 @@ export const deals: DealType[] = [
   {
     id: "6",
     sponsor: "0x123",
-    creator: "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB",
+    creator: yourAddress,
     status: "Accepted",
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,

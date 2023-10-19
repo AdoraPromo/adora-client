@@ -12,7 +12,7 @@ interface ModalProps {
 }
 
 const Modal = ({ children, openTrigger, footerActions, title, open, width, setOpen }: ModalProps) => {
-  const setWidth = width || "2/3";
+  const setWidth = width ? `w-${width}` : "w-3/5";
 
   return (
     <>
@@ -43,7 +43,7 @@ const Modal = ({ children, openTrigger, footerActions, title, open, width, setOp
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className={`flex flex-col justify-center items-center w-${setWidth} transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
+                  className={`flex flex-col justify-center items-center ${setWidth} transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}
                 >
                   {title && (
                     <Dialog.Title as="h1" className="text-2xl text-neutral font-bold">

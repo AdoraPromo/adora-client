@@ -7,22 +7,20 @@ import DealActions from "./deal-info/DealActions";
 import { DealType } from "~~/types/deal";
 import { notification } from "~~/utils/scaffold-eth";
 
-const CreateDealOpenTrigger = ({
-  title,
-  open,
-  setOpen,
-}: {
+interface CreateDealOpenTriggerProps {
+  status: string;
   title: string;
   open: boolean;
   setOpen: (open: boolean) => void;
-}) => {
+}
+
+const CreateDealOpenTrigger = ({ title, open, setOpen }: CreateDealOpenTriggerProps) => {
   return (
     <Button
       classes={{
         width: "auto",
         height: "[12px]",
         padding: "5 py-2",
-        bgColor: "primary",
         textColor: "accent",
         textSize: "lg",
       }}
@@ -78,8 +76,10 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
       title={title}
       open={open}
       setOpen={setOpen}
-      openTrigger={<CreateDealOpenTrigger title={title} open={open} setOpen={setOpen} />}
-      footerActions={<DealActions actionTitle={title} onClose={() => setOpen(false)} onAction={createDeal} />}
+      openTrigger={<CreateDealOpenTrigger status={deal.status} title={title} open={open} setOpen={setOpen} />}
+      footerActions={
+        <DealActions deal={deal} actionTitle={title} onClose={() => setOpen(false)} onAction={createDeal} />
+      }
     >
       <div className="relative p-6 px-10 flex flex-row justify-between items-center w-full gap-5">
         <div className="flex flex-col gap-5 w-1/2">

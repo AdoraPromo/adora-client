@@ -31,10 +31,8 @@ export const Button = ({ text, onClick, icon, classes: classesProps }: ButtonPro
       width: classesProps?.width ? `w-${classesProps?.width}` : "",
       height: classesProps?.height ? `h-${classesProps?.height}` : "",
       padding: classesProps?.padding ? `p-${classesProps?.padding}` : "",
-      borderColor: classesProps?.borderColor
-        ? `border-2 border-${classesProps?.borderColor} rounded-lg border-opacity-40`
-        : "",
-      bgColor: classesProps?.bgColor ? `bg-${classesProps?.bgColor}` : "",
+      borderColor: classesProps?.borderColor,
+      bgColor: classesProps?.bgColor ? classesProps?.bgColor : "bg-primary",
       textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
       textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
       fontWeight: classesProps?.textColor ? `font-${classesProps?.fontWeight}` : "",
