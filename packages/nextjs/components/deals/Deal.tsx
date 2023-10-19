@@ -36,13 +36,7 @@ const DealButton = ({ status }: { status: string }) => {
     );
   }
 
-  return (
-    <Button
-      classes={{ ...basicButtonClasses, bgColor: "accent-content" }}
-      text="View"
-      onClick={() => notification.info("Viewing...")}
-    />
-  );
+  return <Button classes={{ ...basicButtonClasses, bgColor: "accent-content" }} text="View" onClick={undefined} />;
 };
 
 export interface DealProps {
