@@ -3,23 +3,24 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
+import { useGlobalState } from "~~/services/store/store";
 import { getBaseUrl } from "~~/utils/adora/baseUrl";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface DealSentModalProps {
-  dealId: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-const DealSentModal = ({ dealId, open, setOpen }: DealSentModalProps) => {
+const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
   const [linkCopied, setLinkCopied] = useState(false);
+  const globalState = useGlobalState();
 
   const pathname = usePathname();
 
   // ADD: Get the ID of the deal so that the link can be copied
   const copyLinkToClipboard = () => {
-    const copyUrl = `${getBaseUrl()}${pathname}?id=${dealId}`;
+    const copyUrl = `${getBaseUrl()}${pathname}?id=${globalState.dealId}&key=${globalState.symmetricKey}`;
     navigator.clipboard.writeText(copyUrl);
 
     setLinkCopied(true);

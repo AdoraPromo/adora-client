@@ -4,7 +4,11 @@ import { Input } from "../misc/Input";
 import { TextArea } from "../misc/TextArea";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
-import { DealType } from "~~/types/deal";
+import * as ethSigUtil from "@metamask/eth-sig-util";
+import { ethers, utils } from "ethers";
+import { ApeCoinABI, SponsorshipMarketplaceABI, apecoinAddress, marketplaceAddress } from "~~/contracts";
+import { useGlobalState } from "~~/services/store/store";
+import type { DealType } from "~~/types/deal";
 import { notification } from "~~/utils/scaffold-eth";
 
 interface CreateDealOpenTriggerProps {
@@ -57,18 +61,106 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
   const updateRequirements = (newRequirements: string) => {
     setDeal({ ...deal, requirements: newRequirements });
   };
+  const { address, setDealId, setSymmetricKey } = useGlobalState();
 
-  // ADD: Deal creation logic
-  const createDeal = () => {
-    const isDealCreated = true;
+  const createDeal = async () => {
+    const paymentPerThousandInApeWei =
+      (BigInt(Math.round(deal.paymentPerThousand * 10000)) * BigInt(10 ** 18)) / BigInt(10000);
 
-    notification.info("ADD: Deal creation logic");
+    const privateTerms = {
+      twitterUserId: deal.twitterHandle,
+      paymentPerLike: (paymentPerThousandInApeWei / BigInt(1000)).toString(),
+    };
 
-    // Note: Keep these at the end
-    if (isDealCreated) {
-      setOpen(false); // Closes 'Create Deal' modal
-      onSuccess(); // Opens 'Deal Sent' modal
-    }
+    const symKey = await crypto.subtle.generateKey(
+      {
+        name: "AES-CBC",
+        length: 256,
+      },
+      true,
+      ["encrypt", "decrypt"],
+    );
+    const exportedSymKey = await crypto.subtle.exportKey("raw", symKey);
+    const exportedSymKeyBase64 = btoa(String.fromCodePoint(...new Uint8Array(exportedSymKey)));
+    setSymmetricKey(exportedSymKeyBase64);
+
+    const iv = crypto.getRandomValues(new Uint8Array(16));
+
+    const encodedData = new TextEncoder().encode(JSON.stringify(privateTerms));
+    const ciphertext = await crypto.subtle.encrypt(
+      {
+        name: "AES-CBC",
+        iv: iv,
+      },
+      symKey,
+      encodedData,
+    );
+    const encryptedPrivateTermsBase64 = btoa(String.fromCodePoint(...new Uint8Array(ciphertext)));
+
+    const loadingEncryptionKey = notification.loading(`Waiting to receive public encryption key from wallet...`);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const ethPubKeyBase64 = await window.ethereum!.request({
+      method: `eth_getEncryptionPublicKey` as any,
+      params: [address as `0x${string}`],
+    });
+    notification.remove(loadingEncryptionKey);
+
+    const encryptedSymKey = ethSigUtil.encrypt({
+      publicKey: ethPubKeyBase64 as any,
+      data: exportedSymKeyBase64,
+      version: `x25519-xsalsa20-poly1305`,
+    });
+
+    // Parameters for createDeal transaction
+    const termsHash = utils.keccak256(utils.toUtf8Bytes(JSON.stringify(privateTerms)));
+    const encryptedSymmetricKey = exportedSymKeyBase64;
+    const encryptedTerms = encryptedPrivateTermsBase64;
+    const maxPayment = (BigInt(Math.round(deal.maxPayment * 10000)) / BigInt(10000)) * BigInt(10 ** 18);
+    const redemptionExpirationDate = new Date(deal.deadline);
+    const redemptionExpiration = Math.floor(redemptionExpirationDate.getTime() / 1000);
+    const sponsorEncryptedSymmetricKey = JSON.stringify(encryptedSymKey);
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const signer = provider.getSigner();
+
+    const apecoinContract = new ethers.Contract(apecoinAddress, ApeCoinABI, signer);
+    const allowanceApprovalNote = notification.loading(`👌 Please approve the approval transaction in MetaMask`);
+    const approveTx = await apecoinContract.increaseAllowance(marketplaceAddress, maxPayment);
+    notification.remove(allowanceApprovalNote);
+    const allowanceConfirmationNote = notification.loading(`⏳ Waiting for confirmation of approval transaction...👌`);
+    await approveTx.wait();
+    notification.remove(allowanceConfirmationNote);
+
+    const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
+    const creationApprovalNote = notification.loading(`Please approve the creation transaction in MetaMask`);
+    const createTx = await marketplaceContract.createDeal(
+      termsHash,
+      encryptedSymmetricKey,
+      encryptedTerms,
+      maxPayment,
+      redemptionExpiration,
+      sponsorEncryptedSymmetricKey,
+    );
+    notification.remove(creationApprovalNote);
+    const creationConfirmationNote = notification.loading(`⏳ Waiting for creation transaction to be confirmed...`);
+    const createTxReceipt = await createTx.wait();
+    console.log(JSON.stringify(createTxReceipt));
+    notification.remove(creationConfirmationNote);
+    const dealId = createTxReceipt.events[1].data;
+    setDealId(dealId);
+    notification.success(`✅ Offer ${dealId} created!`);
+
+    // Decrypting is demonstrated here.  This code will be cut and pasted elsewhere when we need to decrypt.
+    // (I just kept it for now as a sanity check, but I will remove it later.)
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // const decrypted = await window.ethereum!.request({
+    //   method: `eth_decrypt` as any,
+    //   params: [JSON.stringify(encryptedSymKey), address],
+    // });
+    // notification.loading(`decrypted: ${decrypted} and expected ${exportedSymKeyBase64}`);
+
+    setOpen(false); // Closes 'Create Deal' modal
+    onSuccess(); // Opens 'Deal Sent' modal
   };
 
   return (
