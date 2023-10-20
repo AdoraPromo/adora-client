@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { Database } from "@tableland/sdk";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
@@ -12,19 +11,20 @@ import { Input } from "~~/components/misc/Input";
 import ViewDealModal from "~~/components/modals/ViewDealModal";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
-import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
+import { getDealsTableName } from "~~/utils/adora/constants";
+import db from "~~/utils/adora/database";
+// import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
-  const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
-  const db = new Database();
+  // const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
 
   // TODO: Sort deals by expiration date
   const [viewDealUrl, setViewDealUrl] = useState("");
   const [status, setStatus] = useState("");
   const [viewDeal, setViewDeal] = useState<DealType>();
   const [allDeals, setAllDeals] = useState<DealType[]>([]);
-  const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
+  const [filteredDeals, setFilteredDeals] = useState<DealType[]>([]);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -33,15 +33,17 @@ const Incoming: NextPage = () => {
   const { address } = useGlobalState();
 
   useEffect(() => {
-    db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE creator_address='${address.toLowerCase()}'`)
-      .all()
-      .then(data => {
-        if (data?.results?.length) {
-          const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
-          setAllDeals(mappedDeals);
-        }
-      });
-  }, []); // eslint-disable-line
+    if (!allDeals.length) {
+      db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE creator_address='${address.toLowerCase()}'`)
+        .all()
+        .then(data => {
+          if (data?.results?.length) {
+            const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
+            setAllDeals(mappedDeals);
+          }
+        });
+    }
+  }, [address]); // eslint-disable-line
 
   useEffect(() => {
     if (!status) {
@@ -61,9 +63,11 @@ const Incoming: NextPage = () => {
     // Get ID from the URL
     const dealId = getDealIdFromQueryParams(viewDealUrl);
 
+    // ADD: Add deal lookup logic.
+    // Note: user could also input a link to the deal that's not present in the `allDeals` state variable.
     // If ID exists, move on
     if (dealId) {
-      const _dealCheck = deals.find(d => d.id === dealId);
+      const _dealCheck = allDeals.find(d => d.id === dealId);
 
       // Deal could not be found
       if (!_dealCheck) {

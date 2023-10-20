@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffectOnce, useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { Connector, useAccount, useConnect } from "wagmi";
 import { useGlobalState } from "~~/services/store/store";
+import { notification } from "~~/utils/scaffold-eth";
 
 const SCAFFOLD_WALLET_STROAGE_KEY = "scaffoldEth2.wallet";
 const WAGMI_WALLET_STORAGE_KEY = "wagmi.wallet";
@@ -44,22 +45,22 @@ export const useAutoConnect = (): void => {
   const { address, setAddress } = useGlobalState();
 
   useEffect(() => {
-    if (!address && accountState.isConnected && accountState.address) {
-      setAddress(accountState.address);
-    } else if (address && !accountState.isConnected) {
+    if (address && accountState.isDisconnected) {
+      notification.info("Disconnected.");
       router.push("/");
-      setAddress("");
     }
-  }, [accountState]); // eslint-disable-line
+  }, [accountState.isDisconnected]); // eslint-disable-line
 
   useEffect(() => {
-    if (accountState.isConnected) {
+    if (accountState.isConnected && accountState.address) {
       // user is connected, set walletName
       setWalletId(accountState.connector?.id ?? "");
+      setAddress(accountState.address);
     } else {
       // user has disconnected, reset walletName
       window.localStorage.setItem(WAGMI_WALLET_STORAGE_KEY, JSON.stringify(""));
       setWalletId("");
+      setAddress("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountState.isConnected, accountState.connector?.name]);

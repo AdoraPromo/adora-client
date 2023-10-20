@@ -2,6 +2,7 @@ import { useState } from "react";
 import ProgressModal from "../ProgressModal";
 import RedeemDealModal from "../RedeemDealModal";
 import { Button } from "~~/components/misc/Button";
+import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { ActionType } from "~~/utils/adora/enums";
 import { getCustomColorByAction } from "~~/utils/adora/getByStatus";
@@ -17,6 +18,7 @@ interface DealActionsProps {
 
 const DealActions = ({ deal, onClose, actionTitle, onAction, openRedeemModal }: DealActionsProps) => {
   const [openProgressModal, setOpenProgressModal] = useState(false);
+  const { sismoProof } = useGlobalState();
 
   return (
     <div className="flex items-center justify-center p-6 gap-4">
@@ -45,10 +47,10 @@ const DealActions = ({ deal, onClose, actionTitle, onAction, openRedeemModal }: 
               textColor: "accent",
               textSize: "lg",
             }}
-            text={actionTitle}
+            text={sismoProof ? actionTitle : "Verify Twitter"}
             onClick={onAction}
           />
-          {actionTitle === ActionType.REDEEM && (
+          {sismoProof && actionTitle === ActionType.REDEEM && (
             <>
               <RedeemDealModal
                 deal={deal}

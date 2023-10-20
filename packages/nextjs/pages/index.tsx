@@ -7,6 +7,7 @@ const Home: NextPage = () => {
   const { address } = useGlobalState();
   const router = useRouter();
 
+  // User is logged in
   if (address) {
     router.push("/outgoing");
     return;

@@ -16,8 +16,8 @@ const baseUrl = getBaseUrl();
 
 export const MetaHeader = ({
   title = "Adora.Promo",
-  description = "Private deals, public trust, Adora Promo is a must!",
-  image = "thumbnail.jpg",
+  description = "Building Trust in Sponsorship",
+  image = "thumbnail.png",
   twitterCard = "summary_large_image",
   children,
 }: MetaHeaderProps) => {
@@ -46,7 +46,7 @@ export const MetaHeader = ({
         </>
       )}
       {twitterCard && <meta name="twitter:card" content={twitterCard} />}
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+      <link rel="icon" type="image/svg" sizes="32x32" href="/favicon.svg" />
       {children}
     </Head>
   );
