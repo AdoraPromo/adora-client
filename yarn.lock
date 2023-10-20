@@ -36,6 +36,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@async-generators/from-emitter@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@async-generators/from-emitter@npm:0.3.0"
+  dependencies:
+    "@async-generators/subject": ^0.4
+    "@async-generators/terminator": ^0.4
+  checksum: 026ee763b8d2b20b6f5e312427fac6d2e3f0c9c9313bbd96042973b253b46bede3d397860608e1819fbc7b394ef74be65b6076b8ee6076d7e85b5bc1d28d376b
+  languageName: node
+  linkType: hard
+
+"@async-generators/subject@npm:^0.4":
+  version: 0.4.0
+  resolution: "@async-generators/subject@npm:0.4.0"
+  dependencies:
+    "@async-generators/terminator": ^0.4.0
+    events: ^1.1.1
+  checksum: 67156b4fa697f56749930a7d12d0cbd91d088d7cbac532e37cc62955441783543fd53a2a1e28ee406d75d0736a9f89bc772629d4d563e1a15ca8b5e7c328bc80
+  languageName: node
+  linkType: hard
+
+"@async-generators/terminator@npm:^0.4, @async-generators/terminator@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@async-generators/terminator@npm:0.4.0"
+  checksum: 957f92801a29b1df04ceec12c02dff5661c33d97be30cac17ad06e6aac70f3d36c624ddc4e49231fa493377946204bdd33c232a8c4b40dd91b3aff0b87638d26
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.22.13":
   version: 7.22.13
   resolution: "@babel/code-frame@npm:7.22.13"
@@ -3448,6 +3475,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts@npm:4.8.3":
+  version: 4.8.3
+  resolution: "@openzeppelin/contracts@npm:4.8.3"
+  checksum: aea130d38d46840c5cbe3adbaa9a7ac645e4bd66ad3f3baf2fa78588c408d1a686170b3408c9e2e5e05530fba22ecdc00d7efb6b27852a8b29f91accbc0af255
+  languageName: node
+  linkType: hard
+
 "@openzeppelin/contracts@npm:^4.8.1":
   version: 4.9.3
   resolution: "@openzeppelin/contracts@npm:4.9.3"
@@ -3735,6 +3769,7 @@ __metadata:
     "@heroicons/react": ^2.0.11
     "@metamask/eth-sig-util": ^7.0.0
     "@rainbow-me/rainbowkit": 1.0.8
+    "@tableland/sdk": ^4.5.3-dev.0
     "@trivago/prettier-plugin-sort-imports": ^4.1.1
     "@types/node": ^17.0.35
     "@types/react": ^18.0.9
@@ -4103,6 +4138,34 @@ __metadata:
   dependencies:
     defer-to-connect: ^2.0.0
   checksum: c29df3bcec6fc3bdec2b17981d89d9c9fc9bd7d0c9bcfe92821dc533f4440bc890ccde79971838b4ceed1921d456973c4180d7175ee1d0023ad0562240a58d95
+  languageName: node
+  linkType: hard
+
+"@tableland/evm@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@tableland/evm@npm:4.3.0"
+  dependencies:
+    "@openzeppelin/contracts": 4.8.3
+  checksum: 59c837e88ffde21c1031b2e6262ba69f2e8cdb5682ba966128dbd2c19c57ea1f10f13277556c3b79eb4c29abc4f98343805840abb40073b452cf860a146c76b5
+  languageName: node
+  linkType: hard
+
+"@tableland/sdk@npm:^4.5.3-dev.0":
+  version: 4.5.3-dev.0
+  resolution: "@tableland/sdk@npm:4.5.3-dev.0"
+  dependencies:
+    "@async-generators/from-emitter": ^0.3.0
+    "@tableland/evm": ^4.3.0
+    "@tableland/sqlparser": ^1.3.0
+    ethers: ^5.7.2
+  checksum: dcacd3c85684813de2e4885ac2541596858a952f369e51c9ad9651ffc27b694a6da15a359abef18392f63cce434bf33fb874c689018af0ae93ae1f68c6f12ea7
+  languageName: node
+  linkType: hard
+
+"@tableland/sqlparser@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@tableland/sqlparser@npm:1.3.0"
+  checksum: a6360687bb37f57b2c5750d2275aa89060e0288bf3a5586d8ccc50f6cbc3d98d678289c570b6b35c41c12898d1acce920f6db1bf120681c2040022289a1fe1a4
   languageName: node
   linkType: hard
 
@@ -9506,6 +9569,13 @@ __metadata:
   version: 5.0.1
   resolution: "eventemitter3@npm:5.0.1"
   checksum: 543d6c858ab699303c3c32e0f0f47fc64d360bf73c3daf0ac0b5079710e340d6fe9f15487f94e66c629f5f82cd1a8678d692f3dbb6f6fcd1190e1b97fcad36f8
+  languageName: node
+  linkType: hard
+
+"events@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "events@npm:1.1.1"
+  checksum: 40431eb005cc4c57861b93d44c2981a49e7feb99df84cf551baed299ceea4444edf7744733f6a6667e942af687359b1f4a87ec1ec4f21d5127dac48a782039b9
   languageName: node
   linkType: hard
 

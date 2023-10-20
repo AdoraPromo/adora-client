@@ -20,7 +20,8 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
       <div className="flex flex-col gap-1">
         <Status value={deal.status} />
         <div>
-          ID: <span>{deal.id}</span>
+          <b>Deal ID:</b>
+          <span>{`${deal.id.slice(0, 8)}...${deal.id.slice(-6)}`}</span>
         </div>
         <div className="flex flex-row gap-3 w-52">
           <div className="flex flex-row w-3/5 gap-1 items-center justify-start">
