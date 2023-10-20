@@ -25,6 +25,7 @@ const Outgoing: NextPage = () => {
   const { address } = useGlobalState();
 
   useEffect(() => {
+    console.log("Fetching deals from Tableland...");
     db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE sponsor_address='${address.toLowerCase()}'`)
       .all()
       .then(data => {
