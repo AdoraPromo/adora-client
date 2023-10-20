@@ -13,7 +13,7 @@ import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
 import { getDealsTableName } from "~~/utils/adora/constants";
 import db from "~~/utils/adora/database";
-import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
+// import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
@@ -63,9 +63,11 @@ const Incoming: NextPage = () => {
     // Get ID from the URL
     const dealId = getDealIdFromQueryParams(viewDealUrl);
 
+    // ADD: Add deal lookup logic.
+    // Note: user could also input a link to the deal that's not present in the `allDeals` state variable.
     // If ID exists, move on
     if (dealId) {
-      const _dealCheck = deals.find(d => d.id === dealId);
+      const _dealCheck = allDeals.find(d => d.id === dealId);
 
       // Deal could not be found
       if (!_dealCheck) {
