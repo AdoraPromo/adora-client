@@ -1,3 +1,5 @@
+import { utils } from "ethers";
+
 export interface DealType {
   id: string;
   creator: string;
@@ -25,22 +27,25 @@ export interface DatabaseDealType {
 }
 
 const dealStatus = (deal: DatabaseDealType): string => {
-  if (deal.redemption_expiration < new Date().getTime()) return "Expired";
+  if (deal.redemption_expiration * 1000 < new Date().getTime()) return "Expired";
   if (deal.status == "New") return "Pending";
 
   return deal.status;
 };
 
 export const fromDatabaseDeal = (deal: any): DealType => {
+  const maxPaymentInApeWei = BigInt(deal.max_payment);
+  const maxPaymentInApe = Number(utils.formatEther(maxPaymentInApeWei));
+  const idInHex = `0x${Buffer.from(deal.id, "base64").toString("hex")}`;
   return {
-    id: deal.id,
+    id: idInHex,
     creator: deal.creator_address,
     sponsor: deal.sponsor_address,
     status: dealStatus(deal),
     twitterHandle: "",
-    deadline: new Date(Number(deal.redemption_expiration)),
+    deadline: new Date(Number(deal.redemption_expiration * 1000)),
     paymentPerThousand: 0,
-    maxPayment: deal.max_payment,
+    maxPayment: maxPaymentInApe,
     requirements: deal.encrypted_terms,
   };
 };
