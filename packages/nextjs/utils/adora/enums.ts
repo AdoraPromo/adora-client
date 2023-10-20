@@ -4,7 +4,6 @@ export enum DealStatus {
   PENDING = "Pending",
   REDEEMED = "Redeemed",
   EXPIRED = "Expired",
-  NEUTRAL = "Neutral",
 }
 
 export enum ActionType {
@@ -13,5 +12,4 @@ export enum ActionType {
   WITHDRAW = "Withdraw",
   ACCEPT = "Accept",
   EXPIRED = "Expired",
-  NEUTRAL = "Neutral",
 }

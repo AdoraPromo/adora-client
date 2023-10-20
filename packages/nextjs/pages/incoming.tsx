@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
+import { Database } from "@tableland/sdk";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
@@ -9,31 +10,38 @@ import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { Button } from "~~/components/misc/Button";
 import { Input } from "~~/components/misc/Input";
 import ViewDealModal from "~~/components/modals/ViewDealModal";
-import { DealType } from "~~/types/deal";
+import { useGlobalState } from "~~/services/store/store";
+import { DealType, fromDatabaseDeal } from "~~/types/deal";
 import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
+  const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
+  const db = new Database();
+
   // TODO: Sort deals by expiration date
   const [viewDealUrl, setViewDealUrl] = useState("");
   const [status, setStatus] = useState("");
   const [viewDeal, setViewDeal] = useState<DealType>();
-  const [allDeals] = useState<DealType[]>(deals);
+  const [allDeals, setAllDeals] = useState<DealType[]>([]);
   const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
-
-  // const { address } = useGlobalState();
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const { address } = useGlobalState();
 
   useEffect(() => {
-    // ADD: Find incoming deals
-    // const tablelandDeals = ...
-    // setAllDeals(tablelandDeals);
-    // setFilteredDeals(tablelandDeals);
-  }, []);
+    db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE creator_address='${address.toLowerCase()}'`)
+      .all()
+      .then(data => {
+        if (data?.results?.length) {
+          const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
+          setAllDeals(mappedDeals);
+        }
+      });
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (!status) {
