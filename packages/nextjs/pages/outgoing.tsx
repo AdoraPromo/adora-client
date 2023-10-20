@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Database } from "@tableland/sdk";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import { DealGrid } from "~~/components/deals/DealGrid";
@@ -9,32 +8,34 @@ import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import DealSentModal from "~~/components/modals/DealSentModal";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
-import { sponsorDeals as deals, emptyDeal } from "~~/utils/adora/mocks/data";
+import db from "~~/utils/adora/database";
+import { emptyDeal } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
   const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
-  const db = new Database();
 
   // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
   const [dealCreation, setDealCreation] = useState<DealType>(emptyDeal);
   const [allDeals, setAllDeals] = useState<DealType[]>([]);
-  const [filteredDeals, setFilteredDeals] = useState<DealType[]>(deals);
+  const [filteredDeals, setFilteredDeals] = useState<DealType[]>([]);
 
   const [dealSentModalOpen, setDealSentModalOpen] = useState(false);
   const { address } = useGlobalState();
 
   useEffect(() => {
-    console.log("Fetching deals from Tableland...");
-    db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE sponsor_address='${address.toLowerCase()}'`)
-      .all()
-      .then(data => {
-        if (data?.results?.length) {
-          const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
-          setAllDeals(mappedDeals);
-        }
-      });
-  }, []); // eslint-disable-line
+    if (!allDeals.length) {
+      db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE sponsor_address='${address.toLowerCase()}'`)
+        .all()
+        .then(data => {
+          if (data?.results?.length) {
+            const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
+            setAllDeals(mappedDeals);
+          }
+        });
+    }
+  }, [address]); // eslint-disable-line
+
   useEffect(() => {
     if (!status) {
       setFilteredDeals(allDeals);

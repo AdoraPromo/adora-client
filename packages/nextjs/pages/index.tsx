@@ -1,7 +1,18 @@
+import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
+import { useGlobalState } from "~~/services/store/store";
 
 const Home: NextPage = () => {
+  const { address } = useGlobalState();
+  const router = useRouter();
+
+  // User is logged in
+  if (address) {
+    router.push("/outgoing");
+    return;
+  }
+
   return (
     <>
       <MetaHeader />
