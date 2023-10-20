@@ -8,11 +8,12 @@ import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import DealSentModal from "~~/components/modals/DealSentModal";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
+import { getDealsTableName } from "~~/utils/adora/constants";
 import db from "~~/utils/adora/database";
 import { emptyDeal } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
-  const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
+  // const DB_TABLE_NAME = getDealsTableName(); //await databaseContract.s_tableName();
 
   // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
@@ -25,7 +26,7 @@ const Outgoing: NextPage = () => {
 
   useEffect(() => {
     if (!allDeals.length) {
-      db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE sponsor_address='${address.toLowerCase()}'`)
+      db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE sponsor_address='${address.toLowerCase()}'`)
         .all()
         .then(data => {
           if (data?.results?.length) {

@@ -11,12 +11,13 @@ import { Input } from "~~/components/misc/Input";
 import ViewDealModal from "~~/components/modals/ViewDealModal";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
+import { getDealsTableName } from "~~/utils/adora/constants";
 import db from "~~/utils/adora/database";
 import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
-  const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
+  // const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
 
   // TODO: Sort deals by expiration date
   const [viewDealUrl, setViewDealUrl] = useState("");
@@ -33,7 +34,7 @@ const Incoming: NextPage = () => {
 
   useEffect(() => {
     if (!allDeals.length) {
-      db.prepare(`SELECT * FROM ${DB_TABLE_NAME} WHERE creator_address='${address.toLowerCase()}'`)
+      db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE creator_address='${address.toLowerCase()}'`)
         .all()
         .then(data => {
           if (data?.results?.length) {
