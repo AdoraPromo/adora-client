@@ -283,6 +283,30 @@ export const SponsorshipMarketplaceABI = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "dealId",
+        type: "bytes32",
+      },
+    ],
+    name: "canUserDecrypt",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes32",
         name: "termsHash",
         type: "bytes32",

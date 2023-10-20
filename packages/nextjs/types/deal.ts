@@ -1,3 +1,4 @@
+import { DealStatus } from "../utils/adora/enums";
 import { utils } from "ethers";
 
 export interface DealType {
@@ -26,11 +27,27 @@ export interface DatabaseDealType {
   encrypted_tweet_id: string;
 }
 
-const dealStatus = (deal: DatabaseDealType): string => {
+export const dealStatus = (deal: DatabaseDealType): string => {
   if (deal.redemption_expiration * 1000 < new Date().getTime()) return "Expired";
   if (deal.status == "New") return "Pending";
 
   return deal.status;
+};
+
+export const statusNumberToString = (status: number | string): DealStatus => {
+  const statusString = status.toString();
+  switch (statusString) {
+    case "0":
+      return DealStatus.PENDING;
+    case "1":
+      return DealStatus.ACCEPTED;
+    case "2":
+      return DealStatus.REDEEMED;
+    case "3":
+      return DealStatus.WITHDRAWN;
+    default:
+      throw new Error(`Unknown status: ${status}`);
+  }
 };
 
 export const fromDatabaseDeal = (deal: any): DealType => {

@@ -70,6 +70,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     const privateTerms = {
       twitterUserId: deal.twitterHandle,
       paymentPerLike: (paymentPerThousandInApeWei / BigInt(1000)).toString(),
+      sponsorshipCriteria: deal.requirements,
     };
 
     const symKey = await crypto.subtle.generateKey(
@@ -82,7 +83,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     );
     const exportedSymKey = await crypto.subtle.exportKey("raw", symKey);
     const exportedSymKeyBase64 = btoa(String.fromCodePoint(...new Uint8Array(exportedSymKey)));
-    setSymmetricKey(exportedSymKeyBase64);
+    setSymmetricKey(Buffer.from(exportedSymKeyBase64, "base64").toString("hex"));
 
     const iv = crypto.getRandomValues(new Uint8Array(16));
 
@@ -95,7 +96,8 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
       symKey,
       encodedData,
     );
-    const encryptedPrivateTermsBase64 = btoa(String.fromCodePoint(...new Uint8Array(ciphertext)));
+    const ciphertextWithIv = new Uint8Array([...iv, ...new Uint8Array(ciphertext)]);
+    const encryptedPrivateTermsBase64 = btoa(String.fromCodePoint(...ciphertextWithIv));
 
     const loadingEncryptionKey = notification.loading(`Waiting to receive public encryption key from wallet...`);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

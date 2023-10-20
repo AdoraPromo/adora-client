@@ -7,35 +7,103 @@ import CreatorModalBody from "./content/creator/CreatorModalBody";
 import SponsorModalActions from "./content/sponsor/SponsorModalActions";
 import SponsorModalBody from "./content/sponsor/SponsorModalBody";
 import { SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sismo-core/sismo-connect-react";
+import { ethers, utils } from "ethers";
+import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
+import { statusNumberToString } from "~~/types/deal";
+import { notification } from "~~/utils/scaffold-eth";
+
+const fromBase64 = (str: string) =>
+  new Uint8Array(
+    atob(str)
+      .split("")
+      .map(c => c.charCodeAt(0)),
+  );
 
 const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealType }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
+
+  useEffect(() => {
+    (async () => {
+      const dealId = current.get("id");
+      if (dealId && utils.isBytesLike(dealId)) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+        const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, provider);
+        const fetchedDealStruct = await marketplaceContract.getDeal(dealId);
+        console.log({ fetchedDealStruct });
+        const symKeyHex = current.get("key");
+        if (!symKeyHex) {
+          notification.error(`No valid decryption key found`);
+          return;
+        }
+        const symKey = await crypto.subtle.importKey(
+          "raw",
+          fromBase64(Buffer.from(symKeyHex, "hex").toString("base64")),
+          {
+            name: "AES-CBC",
+            length: 256,
+          },
+          false,
+          ["decrypt"],
+        );
+        const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
+        const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
+        const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
+        const offerTermsArrayBuffer = await crypto.subtle.decrypt(
+          {
+            name: "AES-CBC",
+            iv: recoveredIv,
+          },
+          symKey,
+          encryptedZipArrayBuffer,
+        );
+        const offerTermsString = new TextDecoder().decode(offerTermsArrayBuffer);
+        const offerTerms = JSON.parse(offerTermsString);
+        console.log("Decrypted");
+        console.log(offerTermsString);
+        const decryptedFetchedDeal: DealType = {
+          id: dealId,
+          creator: fetchedDealStruct.creator,
+          sponsor: fetchedDealStruct.sponsor,
+          status: statusNumberToString(fetchedDealStruct.status.toString()),
+          twitterHandle: offerTerms.twitterUserId,
+          deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
+          paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
+          maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
+          requirements: offerTerms.sponsorshipCriteria,
+        };
+        console.log({ decryptedFetchedDeal });
+        setDecryptedDeal(decryptedFetchedDeal);
+      }
+    })(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const [open, setOpen] = useState(false);
 
   const { address, setSismoProof } = useGlobalState();
 
   // Set initial state to be the encrypted deal
-  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
   const config: SismoConnectConfig = {
     appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
   };
   const { sismoConnect } = useSismoConnect({ config });
 
   const setOpenWithQueryParams = (open: boolean) => {
-    if (!deal) return;
+    // if (!deal) return;
 
     setOpen(open);
-    if (open) {
+    if (open && deal) {
       // TODO: Handle missing ID error
       deal.id && current.set("id", deal.id);
-    } else {
+    }
+    if (!open) {
       current.delete("id");
+      current.delete("key");
     }
 
     const query = current.toString() ? `?${current.toString()}` : "";
@@ -52,7 +120,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
 
   useEffect(() => {
     // If modal isn't open and we have the required deal, open modal
-    if (!open && deal && current.get("id") === deal.id) {
+    if (!open && (deal || current.get("id"))) {
       setOpenWithQueryParams(true);
     }
     const sismoConnectResponse = current.get("sismoConnectResponseCompressed");
@@ -79,14 +147,18 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
       open={open}
       setOpen={setOpenWithQueryParams}
       footerActions={
-        !deal ? null : isSponsor ? (
+        !deal && !decryptedDeal ? null : isSponsor ? (
           <SponsorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
           <CreatorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         )
       }
     >
-      {!deal ? null : isSponsor ? <SponsorModalBody deal={decryptedDeal} /> : <CreatorModalBody deal={decryptedDeal} />}
+      {!deal && !decryptedDeal ? null : isSponsor ? (
+        <SponsorModalBody deal={decryptedDeal} />
+      ) : (
+        <CreatorModalBody deal={decryptedDeal} />
+      )}
     </Modal>
   );
 };
