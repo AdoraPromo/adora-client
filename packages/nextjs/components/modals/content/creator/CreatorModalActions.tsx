@@ -1,7 +1,10 @@
+"use client";
+
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import DealActions from "../../deal-info/DealActions";
 import { useGlobalState } from "~~/services/store/store";
+import { AuthType, SismoConnectConfig, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { DealType } from "~~/types/deal";
 import { ActionType } from "~~/utils/adora/enums";
 import { getActionTitleByStatus } from "~~/utils/adora/getByStatus";
@@ -19,14 +22,25 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const creatorAction = getActionTitleByStatus(false, deal?.status || "", sismoProof);
+  const creatorAction = getActionTitleByStatus(false, deal?.status || "");
+  const config: SismoConnectConfig = {
+    appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
+  };
+  const { sismoConnect } = useSismoConnect({ config });
 
   // ADD: Based on the action, add a function to perform upon clicking the action button
   const getCreatorsActionCallback = (action: string) => {
     switch (action) {
       case ActionType.ACCEPT:
         return function () {
-          notification.info("Create action for Accept");
+          localStorage.setItem("redirectUrl", window.location.href);
+          sismoConnect.request({
+            auths: [
+              {
+                authType: AuthType.TWITTER,
+              },
+            ],
+          });
         };
       case ActionType.REDEEM:
         return function () {

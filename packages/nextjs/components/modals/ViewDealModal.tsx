@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Modal from "./Modal";
 import CreatorModalActions from "./content/creator/CreatorModalActions";
 import CreatorModalBody from "./content/creator/CreatorModalBody";
 import SponsorModalActions from "./content/sponsor/SponsorModalActions";
 import SponsorModalBody from "./content/sponsor/SponsorModalBody";
+import { SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 
@@ -15,10 +16,16 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const { address, setSismoProof } = useGlobalState();
   const [open, setOpen] = useState(false);
+
+  const { address, setSismoProof } = useGlobalState();
+
   // Set initial state to be the encrypted deal
   const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
+  const config: SismoConnectConfig = {
+    appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
+  };
+  const { sismoConnect } = useSismoConnect({ config });
 
   const setOpenWithQueryParams = (open: boolean) => {
     if (!deal) return;
@@ -48,10 +55,18 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
     if (!open && deal && current.get("id") === deal.id) {
       setOpenWithQueryParams(true);
     }
+    const sismoConnectResponse = current.get("sismoConnectResponseCompressed");
 
-    if (current.get("sismoProof")) {
-      // ADD: Do something with the Sismo proof
-      setSismoProof(current.get("sismoProof") || "");
+    const tempVar = window.location.href.split("?");
+
+    if (sismoConnectResponse || (tempVar.length > 1 && tempVar[1].startsWith("sismo"))) {
+      const response: SismoConnectResponse | null = sismoConnect.getResponse();
+      console.log({ response });
+      if (response) {
+        setSismoProof(response);
+        const url = localStorage.getItem("redirectUrl");
+        router.push(url ?? "/");
+      }
     }
   }, [searchParams]); // eslint-disable-line
 
