@@ -44,6 +44,12 @@ export const useAutoConnect = (): void => {
   const { address, setAddress } = useGlobalState();
 
   useEffect(() => {
+    if (router.isReady && !accountState.isConnecting && !accountState.isConnected && !address) {
+      router.push("/");
+    }
+  }, [router.isReady, address]); // eslint-disable-line
+
+  useEffect(() => {
     if (!address && accountState.isConnected && accountState.address) {
       setAddress(accountState.address);
     } else if (address && !accountState.isConnected) {

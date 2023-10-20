@@ -7,14 +7,11 @@ import { WagmiConfig } from "wagmi";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
-import useAuth from "~~/hooks/adora/useAuth";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import "~~/styles/globals.css";
 
 const AdoraApp = ({ Component, pageProps }: AppProps) => {
-  useAuth();
-
   return (
     <WagmiConfig config={wagmiConfig}>
       <NextNProgress />
