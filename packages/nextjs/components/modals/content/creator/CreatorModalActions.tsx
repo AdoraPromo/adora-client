@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import DealActions from "../../deal-info/DealActions";
 import { useGlobalState } from "~~/services/store/store";
 import { AuthType, SismoConnectConfig, useSismoConnect } from "@sismo-core/sismo-connect-react";
+import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { ActionType } from "~~/utils/adora/enums";
 import { getActionTitleByStatus } from "~~/utils/adora/getByStatus";
@@ -27,20 +28,28 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
     appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
   };
   const { sismoConnect } = useSismoConnect({ config });
+  const { sismoProof } = useGlobalState();
 
   // ADD: Based on the action, add a function to perform upon clicking the action button
   const getCreatorsActionCallback = (action: string) => {
     switch (action) {
       case ActionType.ACCEPT:
         return function () {
-          localStorage.setItem("redirectUrl", window.location.href);
-          sismoConnect.request({
-            auths: [
-              {
-                authType: AuthType.TWITTER,
-              },
-            ],
-          });
+          // TODO: Fix this as it requires the user to click the "Accept" button twice.
+          // On the first click, they are redirected to Sismo to get the proof, then on the second click they actually accept the deal.
+          if (!sismoProof) {
+            localStorage.setItem("redirectUrl", window.location.href);
+            sismoConnect.request({
+              auths: [
+                {
+                  authType: AuthType.TWITTER,
+                },
+              ],
+            });
+          } else {
+            console.log("Accepting deal");
+            console.log(`Sismo proof data: ${JSON.stringify(sismoProof)}`);
+          }
         };
       case ActionType.REDEEM:
         return function () {
