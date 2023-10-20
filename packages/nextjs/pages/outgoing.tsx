@@ -38,11 +38,7 @@ const Outgoing: NextPage = () => {
         <div className="flex flex-row justify-between items-center w-full">
           <StatusDropdown status={status} setStatus={setStatus} />
           <CreateDealModal onSuccess={() => setDealSentModalOpen(true)} deal={dealCreation} setDeal={setDealCreation} />
-          <DealSentModal
-            open={dealSentModalOpen}
-            setOpen={setDealSentModalOpen}
-            dealId={dealCreation?.id ? dealCreation?.id : "3"}
-          />
+          <DealSentModal open={dealSentModalOpen} setOpen={setDealSentModalOpen} />
         </div>
         {filteredDeals.length ? (
           <DealGrid deals={filteredDeals} />
