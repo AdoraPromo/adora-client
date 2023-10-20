@@ -43,7 +43,7 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
       <>
         <div className="flex flex-col text-neutral w-full items-center justify-center gap">
           <div className="text-2xl">Your Deal has been</div>
-          <div className="text-4xl font-bold">successfully sent!</div>
+          <div className="text-4xl font-bold">successfully created!</div>
           <div className="p-6 pb-2">
             <Image src={"/assets/success.svg"} alt="deal-sent-icon" width={400} height={400} />
           </div>

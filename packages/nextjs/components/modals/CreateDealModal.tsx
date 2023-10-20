@@ -124,15 +124,15 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     const signer = provider.getSigner();
 
     const apecoinContract = new ethers.Contract(apecoinAddress, ApeCoinABI, signer);
-    const allowanceApprovalNote = notification.loading(`👌 Please approve the approval transaction in MetaMask`);
+    const allowanceApprovalNote = notification.loading(`Please approve the increase\nallowance transaction 👌`);
     const approveTx = await apecoinContract.increaseAllowance(marketplaceAddress, maxPayment);
     notification.remove(allowanceApprovalNote);
-    const allowanceConfirmationNote = notification.loading(`⏳ Waiting for confirmation of approval transaction...👌`);
+    const allowanceConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
     await approveTx.wait();
     notification.remove(allowanceConfirmationNote);
 
     const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
-    const creationApprovalNote = notification.loading(`Please approve the creation transaction in MetaMask`);
+    const creationApprovalNote = notification.loading(`Please approve the\ncreate deal transaction 👌`);
     const createTx = await marketplaceContract.createDeal(
       termsHash,
       encryptedSymmetricKey,
@@ -142,13 +142,13 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
       sponsorEncryptedSymmetricKey,
     );
     notification.remove(creationApprovalNote);
-    const creationConfirmationNote = notification.loading(`⏳ Waiting for creation transaction to be confirmed...`);
+    const creationConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
     const createTxReceipt = await createTx.wait();
     console.log(JSON.stringify(createTxReceipt));
     notification.remove(creationConfirmationNote);
     const dealId = createTxReceipt.events[1].data;
     setDealId(dealId);
-    notification.success(`✅ Offer ${dealId} created!`);
+    notification.success(`Offer ${dealId} created!`);
 
     // Decrypting is demonstrated here.  This code will be cut and pasted elsewhere when we need to decrypt.
     // (I just kept it for now as a sanity check, but I will remove it later.)
