@@ -12,7 +12,6 @@ import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { statusNumberToString } from "~~/types/deal";
-import { notification } from "~~/utils/scaffold-eth";
 
 const fromBase64 = (str: string) =>
   new Uint8Array(
@@ -40,11 +39,8 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         console.log({ fetchedDealStruct });
         // If the key is in the URL, attempt to decrypt the deal using that key
         if (current.get("key")) {
-          const symKeyHex = current.get("key");
-          if (!symKeyHex) {
-            notification.error(`No valid decryption key found`);
-            return;
-          }
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const symKeyHex = current.get("key")!;
           const symKey = await crypto.subtle.importKey(
             "raw",
             fromBase64(Buffer.from(symKeyHex, "hex").toString("base64")),

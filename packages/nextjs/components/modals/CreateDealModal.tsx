@@ -85,6 +85,28 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     const exportedSymKeyBase64 = btoa(String.fromCodePoint(...new Uint8Array(exportedSymKey)));
     setSymmetricKey(Buffer.from(exportedSymKeyBase64, "base64").toString("hex"));
 
+    const publicEncryptionKeyBase64 = `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzMRsTqLgXTXnAack4jIJn7K/Sl0kaFmZ97X+cbRf7W6k7IeV+wZb3FZWtfY7spEJMNMJsCsG9cwLBEzqNlfo8VNYMHva8d/AnauA5D3BzPdNitFrVWaD5RTL52Jutl5bF7MNgeMVhrSkW0Pcngr/9pZjyiTpKI2rC+geIkUF3TdLWC1L4Z+EYlBQGKj29JMXEw+91WIM7KkPxFc6fugUMS768Dnsj96FRdSFrMjzlav/3wq5JwmkcPTld3ZaGXCNR95p5G8+LfaRRDfE+oAj1mk8O71LKVk4LLX5VLy6A17xjMROOqd2p3bDbj0kuB4j/5W/u8QCBEW4vtMatKNNzQIDAQAB`;
+
+    const publicEncryptionKey = await crypto.subtle.importKey(
+      "spki",
+      fromBase64(publicEncryptionKeyBase64),
+      {
+        name: "RSA-OAEP",
+        hash: "SHA-256",
+      },
+      true,
+      ["encrypt"],
+    );
+
+    const encryptedSymKey = await crypto.subtle.encrypt(
+      {
+        name: "RSA-OAEP",
+      },
+      publicEncryptionKey,
+      exportedSymKey,
+    );
+    const encryptedSymKeyBase64 = btoa(String.fromCodePoint(...new Uint8Array(encryptedSymKey)));
+
     const iv = crypto.getRandomValues(new Uint8Array(16));
 
     const encodedData = new TextEncoder().encode(JSON.stringify(privateTerms));
@@ -99,7 +121,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     const ciphertextWithIv = new Uint8Array([...iv, ...new Uint8Array(ciphertext)]);
     const encryptedPrivateTermsBase64 = btoa(String.fromCodePoint(...ciphertextWithIv));
 
-    const loadingEncryptionKey = notification.loading(`Waiting to receive public encryption key from wallet...`);
+    const loadingEncryptionKey = notification.loading(`Please approve the public\nkey generation. 👌`);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const ethPubKeyBase64 = await window.ethereum!.request({
       method: `eth_getEncryptionPublicKey` as any,
@@ -107,7 +129,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     });
     notification.remove(loadingEncryptionKey);
 
-    const encryptedSymKey = ethSigUtil.encrypt({
+    const symKeyEncryptedWithSponsorsWallet = ethSigUtil.encrypt({
       publicKey: ethPubKeyBase64 as any,
       data: exportedSymKeyBase64,
       version: `x25519-xsalsa20-poly1305`,
@@ -115,18 +137,17 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
 
     // Parameters for createDeal transaction
     const termsHash = utils.keccak256(utils.toUtf8Bytes(JSON.stringify(privateTerms)));
-    const encryptedSymmetricKey = exportedSymKeyBase64;
     const encryptedTerms = encryptedPrivateTermsBase64;
     const maxPayment = (BigInt(Math.round(deal.maxPayment * 10000)) / BigInt(10000)) * BigInt(10 ** 18);
     const redemptionExpirationDate = new Date(deal.deadline);
     const redemptionExpiration = Math.floor(redemptionExpirationDate.getTime() / 1000);
-    const sponsorEncryptedSymmetricKey = JSON.stringify(encryptedSymKey);
+    const sponsorEncryptedSymmetricKey = JSON.stringify(symKeyEncryptedWithSponsorsWallet);
 
     const provider = new ethers.providers.Web3Provider(window.ethereum as any);
     const signer = provider.getSigner();
 
     const apecoinContract = new ethers.Contract(apecoinAddress, ApeCoinABI, signer);
-    const allowanceApprovalNote = notification.loading(`Please approve the increase\nallowance transaction 👌`);
+    const allowanceApprovalNote = notification.loading(`Please approve the increase\nallowance transaction. 👌`);
     const approveTx = await apecoinContract.increaseAllowance(marketplaceAddress, maxPayment);
     notification.remove(allowanceApprovalNote);
     const allowanceConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
@@ -134,15 +155,23 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     notification.remove(allowanceConfirmationNote);
 
     const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
-    const creationApprovalNote = notification.loading(`Please approve the\ncreate deal transaction 👌`);
+    const creationApprovalNote = notification.loading(`Please approve the\ncreate deal transaction. 👌`);
     const createTx = await marketplaceContract.createDeal(
       termsHash,
-      encryptedSymmetricKey,
+      encryptedSymKeyBase64,
       encryptedTerms,
       maxPayment,
       redemptionExpiration,
       sponsorEncryptedSymmetricKey,
     );
+    console.log({
+      termsHash,
+      encryptedSymKeyBase64,
+      encryptedTerms,
+      maxPayment,
+      redemptionExpiration,
+      sponsorEncryptedSymmetricKey,
+    });
     notification.remove(creationApprovalNote);
     const creationConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
     const createTxReceipt = await createTx.wait();
@@ -280,3 +309,10 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     </Modal>
   );
 }
+
+const fromBase64 = (str: string) =>
+  new Uint8Array(
+    atob(str)
+      .split("")
+      .map(c => c.charCodeAt(0)),
+  );
