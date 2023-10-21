@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import DealActions from "../../deal-info/DealActions";
+import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { AuthType, SismoConnectConfig, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { ethers, utils } from "ethers";
 import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
@@ -99,6 +100,8 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
 };
 
 const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
+  console.log("Key input argumet");
+  console.log(key);
   const symKey = await crypto.subtle.importKey(
     "raw",
     fromBase64(Buffer.from(key, "hex").toString("base64")),
@@ -124,9 +127,67 @@ const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
 
   const provider = new ethers.providers.Web3Provider(window.ethereum as any);
   const signer = provider.getSigner();
+
+  // Upload key to Lit Protocol
+  const evmContractConditions = [
+    {
+      contractAddress: marketplaceAddress,
+      functionName: "canUserDecrypt",
+      functionParams: [":userAddress", id],
+      functionAbi: {
+        inputs: [
+          {
+            internalType: "address",
+            name: "user",
+            type: "address",
+          },
+          {
+            internalType: "bytes32",
+            name: "dealId",
+            type: "bytes32",
+          },
+        ],
+        name: "canUserDecrypt",
+        outputs: [
+          {
+            internalType: "bool",
+            name: "",
+            type: "bool",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      chain: "polygon",
+      returnValueTest: {
+        key: "",
+        comparator: "=",
+        value: "true",
+      },
+    },
+  ];
+
+  const client = new LitJsSdk.LitNodeClient({
+    alertWhenUnauthorized: false,
+  });
+  await client.connect();
+  const authSigNote = notification.loading(`Please provide signature\nto save the key to \nLit Protocol 👌`);
+  const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "polygon" });
+  notification.remove(authSigNote);
+  const encryptedSymmetricKey = await client.saveEncryptionKey({
+    evmContractConditions,
+    symmetricKey: fromBase64(Buffer.from(key, "hex").toString("base64")),
+    authSig,
+    chain: "polygon",
+    permanant: true,
+  });
+  console.log("Successfully uploaded to Lit Protocol");
+  console.log(encryptedSymmetricKey);
+  const encryptedSymmetricKeyAsHex = Buffer.from(encryptedSymmetricKey).toString("hex");
+
   const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
   const acceptApprovalNote = notification.loading(`Please approve the\naccept deal transaction 👌`);
-  const acceptTx = await marketplaceContract.acceptDeal(id, encryptedSismoProofBase64, "");
+  const acceptTx = await marketplaceContract.acceptDeal(id, encryptedSismoProofBase64, encryptedSymmetricKeyAsHex);
   notification.remove(acceptApprovalNote);
   const acceptConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
   await acceptTx.wait();

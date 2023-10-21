@@ -10,7 +10,7 @@ const nextConfig = {
     ignoreDuringBuilds: process.env.NEXT_PUBLIC_IGNORE_BUILD_ERROR === "true",
   },
   webpack: config => {
-    config.resolve.fallback = { fs: false, net: false, tls: false };
+    config.resolve.fallback = { fs: false, net: false, tls: false, "node:buffer": require.resolve("buffer/") };
     return config;
   },
   experimental: {

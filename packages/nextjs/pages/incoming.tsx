@@ -30,18 +30,18 @@ const Incoming: NextPage = () => {
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const { address } = useGlobalState();
 
-  useEffect(() => {
-    if (!allDeals.length) {
-      db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE creator_address='${address.toLowerCase()}'`)
-        .all()
-        .then(data => {
-          if (data?.results?.length) {
-            const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
-            setAllDeals(mappedDeals);
-          }
-        });
-    }
-  }, [address]); // eslint-disable-line
+  // useEffect(() => {
+  //   if (!allDeals.length) {
+  //     db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE creator_address='${address.toLowerCase()}'`)
+  //       .all()
+  //       .then(data => {
+  //         if (data?.results?.length) {
+  //           const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
+  //           setAllDeals(mappedDeals);
+  //         }
+  //       });
+  //   }
+  // }, [address]); // eslint-disable-line
 
   useEffect(() => {
     if (!status) {
@@ -76,6 +76,7 @@ const Incoming: NextPage = () => {
         setViewDeal(_dealCheck);
       }
 
+      console.log(`Setting the dealId in the URL in incoming.tsx. Deal ID: ${dealId}`);
       current.set("id", dealId);
       router.push(`${pathname}?${current.toString()}`);
     }

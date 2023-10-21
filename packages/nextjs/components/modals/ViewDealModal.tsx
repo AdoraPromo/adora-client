@@ -6,12 +6,14 @@ import CreatorModalActions from "./content/creator/CreatorModalActions";
 import CreatorModalBody from "./content/creator/CreatorModalBody";
 import SponsorModalActions from "./content/sponsor/SponsorModalActions";
 import SponsorModalBody from "./content/sponsor/SponsorModalBody";
+import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import { SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { ethers, utils } from "ethers";
 import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { statusNumberToString } from "~~/types/deal";
+import { notification } from "~~/utils/scaffold-eth";
 
 const fromBase64 = (str: string) =>
   new Uint8Array(
@@ -40,6 +42,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
     if (dealId && utils.isBytesLike(dealId)) {
       const provider = new ethers.providers.Web3Provider(window.ethereum as any);
       const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, provider);
+      console.log(`Fetching deal with ID: ${dealId}`);
       const fetchedDealStruct = await marketplaceContract.getDeal(dealId);
       console.log({ fetchedDealStruct });
       // If the key is in the URL, attempt to decrypt the deal using that key
@@ -94,9 +97,82 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         console.log({ decryptedFetchedDeal });
         setDecryptedDeal(decryptedFetchedDeal);
         setIsDecryptedDealLoaded(true);
+      } else {
+        // Upload key to Lit Protocol
+        const evmContractConditions = [
+          {
+            contractAddress: marketplaceAddress,
+            functionName: "canUserDecrypt",
+            functionParams: [":userAddress", dealId],
+            functionAbi: {
+              inputs: [
+                {
+                  internalType: "address",
+                  name: "user",
+                  type: "address",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "dealId",
+                  type: "bytes32",
+                },
+              ],
+              name: "canUserDecrypt",
+              outputs: [
+                {
+                  internalType: "bool",
+                  name: "",
+                  type: "bool",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            chain: "polygon",
+            returnValueTest: {
+              key: "",
+              comparator: "=",
+              value: "true",
+            },
+          },
+        ];
+
+        const client = new LitJsSdk.LitNodeClient({
+          alertWhenUnauthorized: false,
+        });
+        await client.connect();
+        const authSigNote = notification.loading(`Please provide signature\nto save the key to \nLit Protocol 👌`);
+        const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "polygon" });
+        notification.remove(authSigNote);
+        const symmetricKey = await client.getEncryptionKey({
+          evmContractConditions,
+          toDecrypt: fetchedDealStruct.creatorEncryptedSymmetricKey, // Stored as a hex string on chain
+          chain: "polygon",
+          authSig,
+        });
+        console.log("Successfully fetched key from Lit Protocol");
+        console.log(symmetricKey);
+        const encryptedDealTermsBase64 = fetchedDealStruct.encryptedTerms;
+        const encryptedDealTermsBlob = new Blob([fromBase64(encryptedDealTermsBase64)]);
+        const decryptedDealTerms = await LitJsSdk.decryptString(encryptedDealTermsBlob, symmetricKey);
+        console.log("Decrypted deal terms");
+        console.log(decryptedDealTerms);
+        const offerTerms = JSON.parse(decryptedDealTerms);
+        const decryptedFetchedDeal: DealType = {
+          id: dealId,
+          creator: fetchedDealStruct.creator,
+          sponsor: fetchedDealStruct.sponsor,
+          status: statusNumberToString(fetchedDealStruct.status.toString()),
+          twitterHandle: offerTerms.twitterUserId,
+          deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
+          paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
+          maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
+          requirements: offerTerms.sponsorshipCriteria,
+        };
+        console.log({ decryptedFetchedDeal });
+        setDecryptedDeal(decryptedFetchedDeal);
+        setIsDecryptedDealLoaded(true);
       }
-    } else {
-      // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
     }
   };
 
@@ -125,11 +201,13 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
     setOpen(open);
     if (open && deal) {
       // TODO: Handle missing ID error
-      deal.id && current.set("id", deal.id);
+      console.log("Set attempted on line 188");
+      //deal.id && current.set("id", deal.id);
     }
     if (!open) {
-      current.delete("id");
-      current.delete("key");
+      console.log("Delete attempted on line 192");
+      // current.delete("id");
+      // current.delete("key");
     }
 
     const query = current.toString() ? `?${current.toString()}` : "";
@@ -161,6 +239,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         router.push(url ?? "/");
       }
     }
+    console.log(`SEARCH PARAMS: ${JSON.stringify(searchParams)}, CURRENT: ${current}`);
   }, [searchParams]); // eslint-disable-line
 
   const isSponsor = deal && (deal as any).sponsor === address;
