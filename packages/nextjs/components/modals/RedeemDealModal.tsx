@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Input } from "../misc/Input";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
+// import { ethers, utils } from "ethers";
 import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
 import { DealType } from "~~/types/deal";
 import { notification } from "~~/utils/scaffold-eth";
@@ -21,8 +22,8 @@ const RedeemDealModal = ({ deal, open, setOpen, setOpenProgressModal }: RedeemDe
   const redeemDeal = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum as any);
     const signer = provider.getSigner();
-    const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
-    const acceptApprovalNote = notification.loading(`Please approve the\naccept deal transaction 👌`);
+    // const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
+    // const acceptApprovalNote = notification.loading(`Please approve the\naccept deal transaction 👌`);
 
     // Keep these two at the end
     setOpen(false); // Close Redeem modal (maybe?)

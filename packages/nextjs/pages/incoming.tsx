@@ -10,9 +10,10 @@ import { Button } from "~~/components/misc/Button";
 import { Input } from "~~/components/misc/Input";
 import ViewDealModal from "~~/components/modals/ViewDealModal";
 import { useGlobalState } from "~~/services/store/store";
-import { DealType, fromDatabaseDeal } from "~~/types/deal";
-import { getDealsTableName } from "~~/utils/adora/constants";
-import db from "~~/utils/adora/database";
+import { DealType } from "~~/types/deal";
+// import { DealType, fromDatabaseDeal } from "~~/types/deal";
+// import { getDealsTableName } from "~~/utils/adora/constants";
+// import db from "~~/utils/adora/database";
 // import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -28,20 +29,21 @@ const Incoming: NextPage = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const { address } = useGlobalState();
-
+  // const { address } = useGlobalState();
   // useEffect(() => {
-  //   if (!allDeals.length) {
-  //     db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE creator_address='${address.toLowerCase()}'`)
-  //       .all()
-  //       .then(data => {
-  //         if (data?.results?.length) {
-  //           const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
-  //           setAllDeals(mappedDeals);
+    //   if (!allDeals.length) {
+      //     db.prepare(`SELECT * FROM ${getDealsTableName()} WHERE creator_address='${address.toLowerCase()}'`)
+      //       .all()
+      //       .then(data => {
+        //         if (data?.results?.length) {
+          //           const mappedDeals: DealType[] = data.results.map(d => fromDatabaseDeal(d));
+          //           setAllDeals(mappedDeals);
   //         }
   //       });
   //   }
   // }, [address]); // eslint-disable-line
+ //TODO: del the below line,    
+  setAllDeals([])
 
   useEffect(() => {
     if (!status) {
