@@ -27,6 +27,8 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
+  const [open, setOpen] = useState(false);
+  const { address, setSismoProof } = useGlobalState();
 
   useEffect(() => {
     (async () => {
@@ -36,56 +38,57 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, provider);
         const fetchedDealStruct = await marketplaceContract.getDeal(dealId);
         console.log({ fetchedDealStruct });
-        const symKeyHex = current.get("key");
-        if (!symKeyHex) {
-          notification.error(`No valid decryption key found`);
-          return;
+        // If the key is in the URL, attempt to decrypt the deal using that key
+        if (current.get("key")) {
+          const symKeyHex = current.get("key");
+          if (!symKeyHex) {
+            notification.error(`No valid decryption key found`);
+            return;
+          }
+          const symKey = await crypto.subtle.importKey(
+            "raw",
+            fromBase64(Buffer.from(symKeyHex, "hex").toString("base64")),
+            {
+              name: "AES-CBC",
+              length: 256,
+            },
+            false,
+            ["decrypt"],
+          );
+          const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
+          const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
+          const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
+          const offerTermsArrayBuffer = await crypto.subtle.decrypt(
+            {
+              name: "AES-CBC",
+              iv: recoveredIv,
+            },
+            symKey,
+            encryptedZipArrayBuffer,
+          );
+          const offerTermsString = new TextDecoder().decode(offerTermsArrayBuffer);
+          const offerTerms = JSON.parse(offerTermsString);
+          console.log("Decrypted");
+          console.log(offerTermsString);
+          const decryptedFetchedDeal: DealType = {
+            id: dealId,
+            creator: fetchedDealStruct.creator,
+            sponsor: fetchedDealStruct.sponsor,
+            status: statusNumberToString(fetchedDealStruct.status.toString()),
+            twitterHandle: offerTerms.twitterUserId,
+            deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
+            paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
+            maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
+            requirements: offerTerms.sponsorshipCriteria,
+          };
+          console.log({ decryptedFetchedDeal });
+          setDecryptedDeal(decryptedFetchedDeal);
         }
-        const symKey = await crypto.subtle.importKey(
-          "raw",
-          fromBase64(Buffer.from(symKeyHex, "hex").toString("base64")),
-          {
-            name: "AES-CBC",
-            length: 256,
-          },
-          false,
-          ["decrypt"],
-        );
-        const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
-        const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
-        const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
-        const offerTermsArrayBuffer = await crypto.subtle.decrypt(
-          {
-            name: "AES-CBC",
-            iv: recoveredIv,
-          },
-          symKey,
-          encryptedZipArrayBuffer,
-        );
-        const offerTermsString = new TextDecoder().decode(offerTermsArrayBuffer);
-        const offerTerms = JSON.parse(offerTermsString);
-        console.log("Decrypted");
-        console.log(offerTermsString);
-        const decryptedFetchedDeal: DealType = {
-          id: dealId,
-          creator: fetchedDealStruct.creator,
-          sponsor: fetchedDealStruct.sponsor,
-          status: statusNumberToString(fetchedDealStruct.status.toString()),
-          twitterHandle: offerTerms.twitterUserId,
-          deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
-          paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
-          maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
-          requirements: offerTerms.sponsorshipCriteria,
-        };
-        console.log({ decryptedFetchedDeal });
-        setDecryptedDeal(decryptedFetchedDeal);
+      } else {
+        // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
       }
     })(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-
-  const [open, setOpen] = useState(false);
-
-  const { address, setSismoProof } = useGlobalState();
 
   // Set initial state to be the encrypted deal
   const config: SismoConnectConfig = {
@@ -119,8 +122,8 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   }, [open, deal]);
 
   useEffect(() => {
-    // If modal isn't open and we have the required deal, open modal
-    if (!open && (deal || current.get("id"))) {
+    // If modal isn't open and we have the dealId in the URL, open the modal
+    if (!open && current.get("id")) {
       setOpenWithQueryParams(true);
     }
     const sismoConnectResponse = current.get("sismoConnectResponseCompressed");
@@ -129,7 +132,6 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
 
     if (sismoConnectResponse || (tempVar.length > 1 && tempVar[1].startsWith("sismo"))) {
       const response: SismoConnectResponse | null = sismoConnect.getResponse();
-      console.log({ response });
       if (response) {
         setSismoProof(response);
         const url = localStorage.getItem("redirectUrl");
