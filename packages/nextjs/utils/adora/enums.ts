@@ -7,9 +7,10 @@ export enum DealStatus {
 }
 
 export enum ActionType {
-  VIEWTWEET = "View Tweet",
-  REDEEM = "Redeem",
-  WITHDRAW = "Withdraw",
   ACCEPT = "Accept",
+  WITHDRAW = "Withdraw",
+  REDEEM = "Redeem",
+  VERIFYTWITTER = "Verify Twitter",
+  VIEWTWEET = "View Tweet",
   EXPIRED = "Expired",
 }

@@ -34,6 +34,7 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
       setOpen={setOpen}
       footerActions={
         <DealActions
+          onClose={() => setOpen(false)}
           actionTitle={!linkCopied ? "Copy Link to the Deal" : "Copied!"}
           onAction={() => copyLinkToClipboard()}
         />
