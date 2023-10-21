@@ -44,9 +44,7 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
         };
       case ActionType.REDEEM:
         return function () {
-          if (sismoProof) {
-            setOpenRedeemModal(!openRedeemModal);
-          }
+          setOpenRedeemModal(!openRedeemModal);
         };
       case ActionType.VERIFYTWITTER:
         return function () {

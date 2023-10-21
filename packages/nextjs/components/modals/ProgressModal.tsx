@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import {
+  /*useEffect,*/
+  useState,
+} from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
+// import { usePathname } from "next/navigation";
+// import { useRouter } from "next/router";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
 import { Transition } from "@headlessui/react";
@@ -110,34 +113,34 @@ const StepThree = ({ isShowing, isSuccess }: { isShowing: boolean; isSuccess: bo
 };
 
 const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
-  const maxSteps = 2;
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  //const maxSteps = 2;
+  const [activeStep /*, setActiveStep*/] = useState<number>(0);
+  const [isSuccess /*, setIsSuccess*/] = useState<boolean>(false);
 
-  const router = useRouter();
-  const pathname = usePathname();
+  // const router = useRouter();
+  // const pathname = usePathname();
 
-  useEffect(() => {
-    // ADD: track blockchain events here and update active step accordingly.
-    setTimeout(() => {
-      if (activeStep < maxSteps) {
-        setActiveStep(activeStep + 1);
-      }
+  // useEffect(() => {
+  //   // ADD: track blockchain events here and update active step accordingly.
+  //   setTimeout(() => {
+  //     if (activeStep < maxSteps) {
+  //       setActiveStep(activeStep + 1);
+  //     }
 
-      // Simulating a situation where the transaction succeeds
-      if (activeStep == 1) {
-        setIsSuccess(true);
-      }
-    }, 3000);
+  //     // Simulating a situation where the transaction succeeds
+  //     if (activeStep == 1) {
+  //       setIsSuccess(true);
+  //     }
+  //   }, 3000);
 
-    // Re-route to the deals page
-    setTimeout(() => {
-      if (activeStep === maxSteps) {
-        router.push(pathname);
-        router.reload();
-      }
-    }, 6000);
-  }, [activeStep, router, pathname]);
+  //   // Re-route to the deals page
+  //   setTimeout(() => {
+  //     if (activeStep === maxSteps) {
+  //       router.push(pathname);
+  //       router.reload();
+  //     }
+  //   }, 6000);
+  // }, [activeStep, router, pathname]);
 
   return (
     <Modal
