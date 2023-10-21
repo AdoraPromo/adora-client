@@ -34,8 +34,10 @@ export const dealStatus = (deal: DatabaseDealType): string => {
   return deal.status;
 };
 
-export const statusNumberToString = (status: number | string): DealStatus => {
+export const statusNumberToString = (status: number | string, deadline: Date): DealStatus => {
   const statusString = status.toString();
+  if (["0", "1"].includes(statusString) && deadline < new Date()) return DealStatus.EXPIRED;
+
   switch (statusString) {
     case "0":
       return DealStatus.PENDING;
