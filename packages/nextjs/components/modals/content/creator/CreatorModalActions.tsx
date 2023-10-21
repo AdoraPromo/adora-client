@@ -146,7 +146,8 @@ const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
         return;
       }
     }
-    throw Error("Could not detect deal acceptance within last 100 seconds");
+    notification.remove(clfNote);
+    notification.error(`Could not detect deal acceptance within last 100 seconds. Please try again.`);
     marketplaceContract.on("DealAccepted", (dealId: string) => {
       notification.remove(clfNote);
       notification.success(`Deal ${dealId} accepted!`);
