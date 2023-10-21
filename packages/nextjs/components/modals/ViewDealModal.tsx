@@ -25,7 +25,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>({ ...deal, id: "" } as DealType); // TODO: Check if we can remove this inital state.
+  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal); // TODO: Check if we can remove this inital state.
   const [open, setOpen] = useState(false);
   const { address, setSismoProof } = useGlobalState();
   const [isDecryptedDealLoaded, setIsDecryptedDealLoaded] = useState(false);
@@ -97,8 +97,10 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
       return;
     }
 
-    // TODO: Test this out
-    !decryptedDeal?.id && fetchEncryptedDeal().catch(err => console.error(err));
+    // TODO: Test this out - only if we open modal for the deal that's in the URL, fetch it
+    if (current.get("id") === deal?.id) {
+      fetchEncryptedDeal().catch(err => console.error(err));
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
