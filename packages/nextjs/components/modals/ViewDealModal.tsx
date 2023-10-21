@@ -26,7 +26,7 @@ const ViewDealModal = () => {
         setDeal(decryptedFetchedDeal);
       })
       .catch(() => {
-        notification.error("Deal with ID '" + dealId + "' does not exist!");
+        notification.error(`Error viewing deal with ID ${dealId}!`);
         return;
       });
   };
