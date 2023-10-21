@@ -17,8 +17,6 @@ import db from "~~/utils/adora/database";
 import { notification } from "~~/utils/scaffold-eth";
 
 const Incoming: NextPage = () => {
-  // const DB_TABLE_NAME = "deals_137_126"; //await databaseContract.s_tableName();
-
   // TODO: Sort deals by expiration date
   const [viewDealUrl, setViewDealUrl] = useState("");
   const [status, setStatus] = useState("");

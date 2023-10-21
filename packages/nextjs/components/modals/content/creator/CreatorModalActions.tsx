@@ -108,16 +108,18 @@ const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
     false,
     ["encrypt"],
   );
+  const iv = crypto.getRandomValues(new Uint8Array(16));
   // Encrypt sismoProof with symmetricKey
   const encryptedSismoProof = await crypto.subtle.encrypt(
     {
       name: "AES-CBC",
-      iv: new Uint8Array(16),
+      iv,
     },
     symKey,
     new TextEncoder().encode(JSON.stringify(simoProof)),
   );
-  const encryptedSismoProofBase64 = Buffer.from(encryptedSismoProof).toString("base64");
+  const encryptedSismoProofWithIv = new Uint8Array([...iv, ...new Uint8Array(encryptedSismoProof)]);
+  const encryptedSismoProofBase64 = Buffer.from(encryptedSismoProofWithIv).toString("base64");
 
   const provider = new ethers.providers.Web3Provider(window.ethereum as any);
   const signer = provider.getSigner();

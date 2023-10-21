@@ -14,8 +14,6 @@ import db from "~~/utils/adora/database";
 import { emptyDeal } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
-  // const DB_TABLE_NAME = getDealsTableName(); //await databaseContract.s_tableName();
-
   // TODO: Sort deals by expiration date
   const [status, setStatus] = useState("");
   const [dealCreation, setDealCreation] = useState<DealType>(emptyDeal);
