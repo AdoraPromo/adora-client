@@ -124,7 +124,7 @@ const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
       console.log({ fetchedDealStruct });
       if (fetchedDealStruct.status === 1) {
         notification.remove(clfNote);
-        notification.success(`Deal ${id} accepted!`);
+        notification.success(`Deal ${id} accepted!`, { duration: 10 });
         resolve(id);
         marketplaceContract.removeAllListeners();
         return;

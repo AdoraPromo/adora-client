@@ -22,6 +22,7 @@ const ViewDealModal = () => {
   const getEncryptedDeal = (dealId: string) => {
     fetchEncryptedDeal(dealId, current.get("key"))
       .then((decryptedFetchedDeal: DealType | undefined) => {
+        console.log(decryptedFetchedDeal);
         setDeal(decryptedFetchedDeal);
       })
       .catch(() => {

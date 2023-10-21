@@ -51,8 +51,8 @@ export const fetchEncryptedDeal = async (dealId: string, symKeyHex: string | nul
         requirements: offerTerms.sponsorshipCriteria,
       };
       return decryptedFetchedDeal;
+    } else {
+      // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
     }
-  } else {
-    // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
   }
 };
