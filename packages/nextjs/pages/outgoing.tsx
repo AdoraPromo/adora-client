@@ -6,6 +6,7 @@ import { DealGrid } from "~~/components/deals/DealGrid";
 import { StatusDropdown } from "~~/components/deals/StatusDropdown";
 import { CreateDealModal } from "~~/components/modals/CreateDealModal";
 import DealSentModal from "~~/components/modals/DealSentModal";
+import ViewDealModal from "~~/components/modals/ViewDealModal";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
 import { getDealsTableName } from "~~/utils/adora/constants";
@@ -47,6 +48,7 @@ const Outgoing: NextPage = () => {
 
   return (
     <>
+      <ViewDealModal />
       <MetaHeader title="Outgoing Deals - Adora.Promo" />
       <div
         style={{ backgroundImage: `url('/assets/background-minimal.svg')` }}

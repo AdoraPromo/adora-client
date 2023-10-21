@@ -202,7 +202,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     <Modal
       title={title}
       open={open}
-      setOpen={setOpen}
+      onClose={() => setOpen(false)}
       openTrigger={<CreateDealOpenTrigger status={deal.status} title={title} open={open} setOpen={setOpen} />}
       footerActions={
         <DealActions deal={deal} actionTitle={title} onClose={() => setOpen(false)} onAction={createDeal} />

@@ -27,7 +27,7 @@ const RedeemDealModal = ({ deal, open, setOpen, setOpenProgressModal }: RedeemDe
     <Modal
       title="Submit your work?"
       open={open}
-      setOpen={setOpen}
+      onClose={() => setOpen(false)}
       footerActions={
         <DealActions onClose={() => setOpen(false)} actionTitle={"Submit"} onAction={() => redeemDeal()} />
       }

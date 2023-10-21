@@ -1,4 +1,3 @@
-import ViewDealModal from "../modals/ViewDealModal";
 import { Deal } from "./Deal";
 import { DealType } from "~~/types/deal";
 
@@ -10,9 +9,7 @@ export const DealGrid = ({ deals }: DealGridProps) => {
   return (
     <div className="flex flex-row flex-wrap gap-5 justify-items-start">
       {deals?.map(deal => (
-        <ViewDealModal key={deal.id} deal={deal}>
-          <Deal deal={deal} />
-        </ViewDealModal>
+        <Deal key={deal.id} deal={deal} />
       ))}
     </div>
   );

@@ -1,21 +1,32 @@
 import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import Status from "./Status";
 import { DealType } from "~~/types/deal";
 import { getCustomColorByStatus } from "~~/utils/adora/getByStatus";
 
 export interface DealProps {
   deal: DealType;
-  open?: boolean;
-  setOpen?: (open: boolean) => void;
 }
 
-export const Deal = ({ deal, open, setOpen }: DealProps) => {
+export const Deal = ({ deal }: DealProps) => {
   const color = getCustomColorByStatus("border", deal.status);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+  const onDealClick = (deal: DealType) => {
+    current.set("id", deal.id);
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
   return (
     <div
       className={`flex flex-col gap-3 py-8 px-12 rounded-2xl border-solid border-2 ${color} border-info hover:cursor-pointer transition ease-in-out hover:scale-105 duration-300 bg-white bg-opacity-80`}
-      onClick={() => setOpen && setOpen(!open)}
+      onClick={() => {
+        onDealClick(deal);
+      }}
     >
       <div className="flex flex-col gap-1">
         <Status value={deal.status} />

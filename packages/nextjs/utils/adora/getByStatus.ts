@@ -46,9 +46,9 @@ export const getActionTitleByStatus = (
   } else {
     switch (status) {
       case DealStatus.ACCEPTED:
-        return sismoProof ? ActionType.REDEEM : ActionType.VERIFYTWITTER;
+        return ActionType.REDEEM;
       case DealStatus.PENDING:
-        return ActionType.ACCEPT;
+        return sismoProof ? ActionType.ACCEPT : ActionType.VERIFYTWITTER;
       case DealStatus.REDEEMED:
         return ActionType.VIEWTWEET;
       default:

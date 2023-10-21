@@ -8,17 +8,17 @@ interface ModalProps {
   title?: string;
   open: boolean;
   width?: string;
-  setOpen: (open: boolean) => void;
+  onClose: () => void;
 }
 
-const Modal = ({ children, openTrigger, footerActions, title, open, width, setOpen }: ModalProps) => {
+const Modal = ({ children, openTrigger, footerActions, title, open, width, onClose }: ModalProps) => {
   const setWidth = width ? `w-${width}` : "w-3/5";
 
   return (
     <>
       {openTrigger}
       <Transition appear show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => setOpen(false)}>
+        <Dialog as="div" className="relative z-10" onClose={onClose}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
