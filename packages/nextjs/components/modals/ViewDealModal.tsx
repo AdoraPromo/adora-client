@@ -25,74 +25,82 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
+  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>({ ...deal, id: "" } as DealType); // TODO: Check if we can remove this inital state.
   const [open, setOpen] = useState(false);
   const { address, setSismoProof } = useGlobalState();
   const [isDecryptedDealLoaded, setIsDecryptedDealLoaded] = useState(false);
+
+  // TODO: Leave comments and remove console.log()
+  const fetchEncryptedDeal = async () => {
+    if (!open) return;
+
+    const dealId = current.get("id");
+    if (dealId && utils.isBytesLike(dealId)) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+      const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, provider);
+      const fetchedDealStruct = await marketplaceContract.getDeal(dealId);
+      console.log({ fetchedDealStruct });
+      // If the key is in the URL, attempt to decrypt the deal using that key
+      if (current.get("key")) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const symKeyHex = current.get("key")!;
+        const symKey = await crypto.subtle.importKey(
+          "raw",
+          fromBase64(Buffer.from(symKeyHex, "hex").toString("base64")),
+          {
+            name: "AES-CBC",
+            length: 256,
+          },
+          false,
+          ["decrypt"],
+        );
+        const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
+        console.log("Encrypted");
+        console.log(encryptedOfferTermsUint8Array);
+        const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
+        console.log(recoveredIv);
+        const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
+        const offerTermsArrayBuffer = await crypto.subtle.decrypt(
+          {
+            name: "AES-CBC",
+            iv: recoveredIv,
+          },
+          symKey,
+          encryptedZipArrayBuffer,
+        );
+        const offerTermsString = new TextDecoder().decode(offerTermsArrayBuffer);
+        const offerTerms = JSON.parse(offerTermsString);
+        console.log("Decrypted");
+        console.log(offerTermsString);
+        const decryptedFetchedDeal: DealType = {
+          id: dealId,
+          creator: fetchedDealStruct.creator,
+          sponsor: fetchedDealStruct.sponsor,
+          status: statusNumberToString(fetchedDealStruct.status.toString()),
+          twitterHandle: offerTerms.twitterUserId,
+          deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
+          paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
+          maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
+          requirements: offerTerms.sponsorshipCriteria,
+        };
+        console.log({ decryptedFetchedDeal });
+        setDecryptedDeal(decryptedFetchedDeal);
+        setIsDecryptedDealLoaded(true);
+      }
+    } else {
+      // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
+    }
+  };
 
   useEffect(() => {
     if (isDecryptedDealLoaded) {
       return;
     }
-    (async () => {
-      if (!open) return;
-      const dealId = current.get("id");
-      if (dealId && utils.isBytesLike(dealId)) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-        const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, provider);
-        const fetchedDealStruct = await marketplaceContract.getDeal(dealId);
-        console.log({ fetchedDealStruct });
-        // If the key is in the URL, attempt to decrypt the deal using that key
-        if (current.get("key")) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const symKeyHex = current.get("key")!;
-          const symKey = await crypto.subtle.importKey(
-            "raw",
-            fromBase64(Buffer.from(symKeyHex, "hex").toString("base64")),
-            {
-              name: "AES-CBC",
-              length: 256,
-            },
-            false,
-            ["decrypt"],
-          );
-          const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
-          console.log("Encrypted");
-          console.log(encryptedOfferTermsUint8Array);
-          const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
-          console.log(recoveredIv);
-          const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
-          const offerTermsArrayBuffer = await crypto.subtle.decrypt(
-            {
-              name: "AES-CBC",
-              iv: recoveredIv,
-            },
-            symKey,
-            encryptedZipArrayBuffer,
-          );
-          const offerTermsString = new TextDecoder().decode(offerTermsArrayBuffer);
-          const offerTerms = JSON.parse(offerTermsString);
-          console.log("Decrypted");
-          console.log(offerTermsString);
-          const decryptedFetchedDeal: DealType = {
-            id: dealId,
-            creator: fetchedDealStruct.creator,
-            sponsor: fetchedDealStruct.sponsor,
-            status: statusNumberToString(fetchedDealStruct.status.toString()),
-            twitterHandle: offerTerms.twitterUserId,
-            deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
-            paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
-            maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
-            requirements: offerTerms.sponsorshipCriteria,
-          };
-          console.log({ decryptedFetchedDeal });
-          setDecryptedDeal(decryptedFetchedDeal);
-          setIsDecryptedDealLoaded(true);
-        }
-      } else {
-        // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
-      }
-    })(); // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // TODO: Test this out
+    !decryptedDeal?.id && fetchEncryptedDeal().catch(err => console.error(err));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // Set initial state to be the encrypted deal
@@ -102,7 +110,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const { sismoConnect } = useSismoConnect({ config });
 
   const setOpenWithQueryParams = (open: boolean) => {
-    // if (!deal) return;
+    // if (!deal) return; // TODO: Is this okay to remove? Perhaps check for decryptedDeal
 
     setOpen(open);
     if (open && deal) {
