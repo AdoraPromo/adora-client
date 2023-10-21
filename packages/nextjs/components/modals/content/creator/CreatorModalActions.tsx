@@ -26,8 +26,6 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const pathName = usePathname();
   const currentFullUrl = `${getBaseUrl()}${pathName}?${current.toString()}`;
-  console.log("Current full URL");
-  console.log(currentFullUrl);
 
   const creatorAction = getActionTitleByStatus(false, deal?.status || "", sismoProof);
   const config: SismoConnectConfig = {
@@ -40,28 +38,8 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
     switch (action) {
       case ActionType.ACCEPT:
         return function () {
-          console.log("SISMO PROOF OBJ");
-          console.log(sismoProof);
-          // TODO: Fix this as it requires the user to click the "Accept" button twice.
-          // On the first click, they are redirected to Sismo to get the proof, then on the second click they actually accept the deal.
-          if (!sismoProof) {
-            console.log("Current URL to redirect back to");
-            console.log(currentFullUrl);
-            localStorage.setItem("redirectUrl", currentFullUrl);
-            sismoConnect.request({
-              auths: [
-                {
-                  authType: AuthType.TWITTER,
-                },
-              ],
-            });
-          } else {
-            console.log("Accepting deal");
-            console.log(`Sismo proof data: ${JSON.stringify(sismoProof)}`);
-            console.log(`Symmetric key: ${current.get("key")}`);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            acceptDealOnChain(current.get("id")!, current.get("key")!, sismoProof);
-          }
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          acceptDealOnChain(current.get("id")!, current.get("key")!, sismoProof);
         };
       case ActionType.REDEEM:
         return function () {
@@ -71,8 +49,14 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
         };
       case ActionType.VERIFYTWITTER:
         return function () {
-          // ADD: Redirect to Sismo and do your thing
-          notification.info("Verify Twitter action");
+          localStorage.setItem("redirectUrl", currentFullUrl);
+          sismoConnect.request({
+            auths: [
+              {
+                authType: AuthType.TWITTER,
+              },
+            ],
+          });
         };
       case ActionType.VIEWTWEET:
         return function () {
