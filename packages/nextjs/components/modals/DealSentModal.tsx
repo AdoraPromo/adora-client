@@ -35,15 +35,13 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
           onAction={() => copyLinkToClipboard()}
         />
       }
-      width="1/2"
+      width="2/5"
     >
       <>
-        <div className="flex flex-col text-neutral w-full items-center justify-center gap">
+        <div className="flex flex-col text-neutral w-full items-center justify-center">
           <div className="text-2xl">Your Deal has been</div>
-          <div className="text-4xl font-bold">successfully created!</div>
-          <div className="p-6 pb-2">
-            <Image src={"/assets/success.svg"} alt="deal-sent-icon" width={400} height={400} />
-          </div>
+          <div className="text-4xl font-bold mb-5">successfully created!</div>
+          <Image src={"/assets/success.svg"} alt="deal-sent-icon" width={150} height={150} />
         </div>
       </>
     </Modal>
