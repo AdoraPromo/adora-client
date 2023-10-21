@@ -80,13 +80,17 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         const offerTerms = JSON.parse(offerTermsString);
         console.log("Decrypted");
         console.log(offerTermsString);
+
+        const deadlineTimestamp = Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000;
+        const deadline = new Date(deadlineTimestamp);
+
         const decryptedFetchedDeal: DealType = {
           id: dealId,
           creator: fetchedDealStruct.creator,
           sponsor: fetchedDealStruct.sponsor,
-          status: statusNumberToString(fetchedDealStruct.status.toString()),
+          status: statusNumberToString(fetchedDealStruct.status.toString(), deadline),
           twitterHandle: offerTerms.twitterUserId,
-          deadline: new Date(Number(fetchedDealStruct.redemptionExpiration.toString()) * 1000),
+          deadline,
           paymentPerThousand: Number(utils.formatEther(BigInt(offerTerms.paymentPerLike) * BigInt(1000))), // paymentPerLike is in ApeWei
           maxPayment: Number(utils.formatEther(fetchedDealStruct.maxPayment)),
           requirements: offerTerms.sponsorshipCriteria,
