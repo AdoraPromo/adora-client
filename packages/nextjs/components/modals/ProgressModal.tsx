@@ -18,6 +18,11 @@ interface ProgressModalProps {
 
 const greenSuccessColor = "#5BB85F";
 
+const iconSettings = {
+  width: 25,
+  height: 25,
+};
+
 const _stepStyleConfig = {
   activeBgColor: greenSuccessColor,
   completedBgColor: greenSuccessColor,
@@ -48,7 +53,9 @@ const StepOne = ({ isShowing }: { isShowing: boolean }) => {
           <div className="text-4xl font-bold">Waiting</div>
           <div className="text-xl">for transaction confirmation</div>
         </div>
-        <Image src={"/assets/wait.svg"} height={200} width={350} alt="waiting" />
+        <div className={`w-[${iconSettings.width}rem] h-[${iconSettings.height}rem] relative`}>
+          <Image src={"/assets/wait.svg"} fill alt="waiting" />
+        </div>
       </div>
     </Transition>
   );
@@ -70,13 +77,15 @@ const StepTwo = ({ isShowing }: { isShowing: boolean }) => {
           <div className="text-4xl font-bold">Processing</div>
           <div className="text-xl">your request</div>
         </div>
-        <Image src={"/assets/wait.svg"} height={200} width={350} alt="waiting" />
+        <div className={`w-[${iconSettings.width}rem] h-[${iconSettings.height}rem] relative`}>
+          <Image src={"/assets/wait.svg"} fill alt="waiting" />
+        </div>
       </div>
     </Transition>
   );
 };
 
-const StepThree = ({ isShowing }: { isShowing: boolean }) => {
+const StepThree = ({ isShowing, isSuccess }: { isShowing: boolean; isSuccess: boolean }) => {
   return (
     <Transition
       show={isShowing}
@@ -88,8 +97,13 @@ const StepThree = ({ isShowing }: { isShowing: boolean }) => {
       leaveTo="opacity-0"
     >
       <div className="flex flex-col items-center justify-center text-neutral gap-8 transition-opacity ease-in-out duration-500">
-        <div className="text-4xl font-bold">Completed!</div>
-        <Image src={"/assets/success.svg"} height={200} width={350} alt="waiting" />
+        <div className="flex flex-col items-center justify-center gap-1">
+          <div className="text-4xl font-bold">{isSuccess ? "Completed" : "Something went wrong"}</div>
+          <div className="text-xl">{isSuccess ? "successfully!" : "Please try again"}</div>
+        </div>
+        <div className={`w-[${iconSettings.width}rem] h-[${iconSettings.height}rem] relative`}>
+          <Image src={`/assets/${isSuccess ? "success" : "fail"}.svg`} fill alt="finalized" />
+        </div>
       </div>
     </Transition>
   );
@@ -98,6 +112,7 @@ const StepThree = ({ isShowing }: { isShowing: boolean }) => {
 const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
   const maxSteps = 2;
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -107,6 +122,11 @@ const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
     setTimeout(() => {
       if (activeStep < maxSteps) {
         setActiveStep(activeStep + 1);
+      }
+
+      // Simulating a situation where the transaction succeeds
+      if (activeStep == 1) {
+        setIsSuccess(true);
       }
     }, 3000);
 
@@ -120,9 +140,9 @@ const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
   }, [activeStep, router, pathname]);
 
   return (
-    <Modal open={open} setOpen={setOpen} footerActions={<DealActions onClose={() => setOpen(false)} />} width="1/2">
+    <Modal open={open} setOpen={setOpen} footerActions={<DealActions onClose={() => setOpen(false)} />} width="2/5">
       <>
-        <div className="flex flex-col text-neutral w-full items-center justify-center gap transition ease-in-out duration-300">
+        <div className="flex flex-col text-neutral w-full items-center justify-center transition ease-in-out duration-300">
           <Stepper activeStep={activeStep} connectorStyleConfig={_connectorStyleConfig} className="w-full">
             <Step styleConfig={_stepStyleConfig} />
             <Step styleConfig={_stepStyleConfig} />
@@ -130,7 +150,7 @@ const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
           </Stepper>
           <StepOne isShowing={activeStep === 0} />
           <StepTwo isShowing={activeStep === 1} />
-          <StepThree isShowing={activeStep === 2} />
+          <StepThree isShowing={activeStep === 2} isSuccess={isSuccess} />
         </div>
       </>
     </Modal>

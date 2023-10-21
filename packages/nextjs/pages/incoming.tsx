@@ -126,14 +126,14 @@ const Incoming: NextPage = () => {
         </div>
         {filteredDeals.length != 0 && <DealGrid deals={filteredDeals} />}
         {filteredDeals.length == 0 && (
-          <div className="flex flex-col justify-center items-center w-full gap-10 p-10">
+          <div className="flex flex-col justify-center items-center w-full gap-3 p-10">
             <div className="flex flex-col justify-center items-center w-full text-2xl">
               <div>This Page is Empty.</div>
               <div>
                 Start with <b>View Deal</b>!
               </div>
             </div>
-            <Image src={"/assets/empty-incoming.svg"} alt="empty-incoming" width={450} height={300} />
+            <Image src={"/assets/empty-incoming.svg"} alt="empty-incoming" width={550} height={300} />
           </div>
         )}
       </div>

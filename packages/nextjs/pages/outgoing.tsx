@@ -10,6 +10,7 @@ import { useGlobalState } from "~~/services/store/store";
 import { DealType, fromDatabaseDeal } from "~~/types/deal";
 import { getDealsTableName } from "~~/utils/adora/constants";
 import db from "~~/utils/adora/database";
+// import { creatorDeals as deals } from "~~/utils/adora/mocks/data";
 import { emptyDeal } from "~~/utils/adora/mocks/data";
 
 const Outgoing: NextPage = () => {
@@ -62,14 +63,14 @@ const Outgoing: NextPage = () => {
         {filteredDeals.length ? (
           <DealGrid deals={filteredDeals} />
         ) : (
-          <div className="flex flex-col justify-center items-center w-full gap-10 p-10">
+          <div className="flex flex-col justify-center items-center w-full gap-5 p-10">
             <div className="flex flex-col justify-center items-center w-full text-2xl">
               <div>This Page is Empty.</div>
               <div>
                 Start with <b>Create Deal</b>!
               </div>
             </div>
-            <Image src={"/assets/empty-outgoing.svg"} alt="empty-outgoing" width={350} height={350} />
+            <Image src={"/assets/empty-outgoing.svg"} alt="empty-outgoing" width={600} height={350} />
           </div>
         )}
       </div>
