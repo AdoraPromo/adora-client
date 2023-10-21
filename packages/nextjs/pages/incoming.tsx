@@ -99,8 +99,9 @@ const Incoming: NextPage = () => {
               setContent={setViewDealUrl}
               placeholder={"Enter deal's URL"}
               type={"string"}
+              cssSpecialId="viewDealButton"
               classes={{
-                width: "auto",
+                width: "1/2",
                 padding: "2 px-4",
                 textColor: "neutral",
                 textSize: "md",
