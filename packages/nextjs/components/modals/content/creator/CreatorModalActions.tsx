@@ -3,11 +3,9 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import DealActions from "../../deal-info/DealActions";
-import { useGlobalState } from "~~/services/store/store";
-import { AuthType, SismoConnectConfig, useSismoConnect } from "@sismo-core/sismo-connect-react";
+import { AuthType, SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { ethers, utils } from "ethers";
 import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
-import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { ActionType } from "~~/utils/adora/enums";
 import { getActionTitleByStatus } from "~~/utils/adora/getByStatus";
@@ -15,12 +13,12 @@ import { notification } from "~~/utils/scaffold-eth";
 
 interface CreatorModalActionsProps {
   deal: DealType | undefined;
+  sismoProof: SismoConnectResponse | null;
   onClose: () => void;
 }
 
-const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
+const CreatorModalActions = ({ deal, sismoProof, onClose }: CreatorModalActionsProps) => {
   const [openRedeemModal, setOpenRedeemModal] = useState(false);
-  const { sismoProof, setSismoProof } = useGlobalState();
 
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -30,9 +28,6 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
     appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
   };
   const { sismoConnect } = useSismoConnect({ config });
-  const { sismoProof } = useGlobalState();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
 
   // ADD: Based on the action, add a function to perform upon clicking the action button
   const getCreatorsActionCallback = (action: string) => {
@@ -54,16 +49,12 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
             console.log("Accepting deal");
             console.log(`Sismo proof data: ${JSON.stringify(sismoProof)}`);
             console.log(`Symmetric key: ${current.get("key")}`);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             acceptDealOnChain(current.get("id")!, current.get("key")!, sismoProof);
           }
         };
       case ActionType.REDEEM:
         return function () {
-          const _sismoProofUrl = current.get("sismoProof");
-          if (!sismoProof && _sismoProofUrl) {
-            setSismoProof(_sismoProofUrl);
-          }
-
           if (sismoProof) {
             setOpenRedeemModal(!openRedeemModal);
           }

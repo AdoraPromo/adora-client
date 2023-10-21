@@ -27,10 +27,11 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
   const [open, setOpen] = useState(false);
-  const { address, setSismoProof } = useGlobalState();
+  const { address, setSismoProof, sismoProof } = useGlobalState();
 
   useEffect(() => {
     (async () => {
+      if (!open) return;
       const dealId = current.get("id");
       if (dealId && utils.isBytesLike(dealId)) {
         const provider = new ethers.providers.Web3Provider(window.ethereum as any);
@@ -52,7 +53,10 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
             ["decrypt"],
           );
           const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
+          console.log("Encrypted");
+          console.log(encryptedOfferTermsUint8Array);
           const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
+          console.log(recoveredIv);
           const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
           const offerTermsArrayBuffer = await crypto.subtle.decrypt(
             {
@@ -148,7 +152,11 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         !deal && !decryptedDeal ? null : isSponsor ? (
           <SponsorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
-          <CreatorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
+          <CreatorModalActions
+            deal={decryptedDeal}
+            sismoProof={sismoProof}
+            onClose={() => setOpenWithQueryParams(false)}
+          />
         )
       }
     >
