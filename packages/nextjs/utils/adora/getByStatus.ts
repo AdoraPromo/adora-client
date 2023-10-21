@@ -27,25 +27,25 @@ export const getColorByStatus = (status: string): string => {
 };
 
 // Actions
-export const getActionTitleByStatus = (isSponsor: boolean, status: string) => {
+export const getActionTitleByStatus = (isSponsor: boolean, status: string, sismoProof?: any): ActionType | "" => {
   if (isSponsor) {
     switch (status) {
       case DealStatus.REDEEMED:
-        return "View Tweet";
+        return ActionType.VIEWTWEET;
       case DealStatus.PENDING:
       case DealStatus.EXPIRED:
-        return "Withdraw";
+        return ActionType.WITHDRAW;
       default:
         return "";
     }
   } else {
     switch (status) {
       case DealStatus.ACCEPTED:
-        return "Redeem";
+        return sismoProof ? ActionType.REDEEM : ActionType.VERIFYTWITTER;
       case DealStatus.PENDING:
-        return "Accept";
+        return ActionType.ACCEPT;
       case DealStatus.REDEEMED:
-        return "View Tweet";
+        return ActionType.VIEWTWEET;
       default:
         return "";
     }

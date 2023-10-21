@@ -19,6 +19,7 @@ export interface InputProps {
   type: string;
   label?: string;
   readOnly?: boolean;
+  cssSpecialId?: string;
 }
 
 export const Input = ({
@@ -29,6 +30,7 @@ export const Input = ({
   type,
   label,
   readOnly,
+  cssSpecialId,
   classes: classesProps,
 }: InputProps) => {
   const _inputClasses = {
@@ -36,6 +38,7 @@ export const Input = ({
     borderColor: classesProps?.borderColor
       ? `border-2 border-${classesProps?.borderColor} active:border-${classesProps?.borderColor} focus:outline-${classesProps?.borderColor}`
       : "", // TODO: Focus border not applying
+    width: classesProps?.width ? `!w-${classesProps?.width}` : "",
     textColor: classesProps?.textColor ? `text-${classesProps?.textColor}` : "",
     textSize: classesProps?.textColor ? `text-${classesProps?.textSize}` : "",
     hover: classesProps?.hover ? classesProps.hover : "",
@@ -65,7 +68,7 @@ export const Input = ({
   );
 
   return (
-    <div className={wrapperClassesJoined}>
+    <div className={wrapperClassesJoined} id={`${cssSpecialId ? `${cssSpecialId}` : ""}`}>
       {label && <label className="text-neutral font-bold ml-2">{label}</label>}
       <input
         readOnly={readOnly}

@@ -4,6 +4,11 @@ import { DealType } from "~~/types/deal";
 // ADD: For mock purposes, add your wallet address here
 const yourAddress = "0x69ddB6f5Bd2d92C397Db173b98FF6dEEF204A3bB";
 
+const now = Date.now();
+const getDate = (increment: number): Date => {
+  return new Date(now + increment * 100000);
+};
+
 export const sponsorDeals: DealType[] = [
   {
     id: "1",
@@ -13,7 +18,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(Date.now() + 100000),
+    deadline: getDate(10),
     requirements: "",
   },
   {
@@ -24,7 +29,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(11),
     requirements: "",
   },
   {
@@ -35,7 +40,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(12),
     requirements: "",
   },
   {
@@ -46,7 +51,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(13),
     requirements: "",
   },
   {
@@ -57,7 +62,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(150),
     requirements: "",
   },
   {
@@ -68,7 +73,7 @@ export const sponsorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(1000),
     requirements: "",
   },
 ];
@@ -82,7 +87,7 @@ export const creatorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(10),
     requirements: "",
   },
   {
@@ -93,7 +98,7 @@ export const creatorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(110),
     requirements: "",
   },
   {
@@ -104,7 +109,7 @@ export const creatorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(120),
     requirements: "",
   },
   {
@@ -115,7 +120,7 @@ export const creatorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(130),
     requirements: "",
   },
   {
@@ -126,7 +131,7 @@ export const creatorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(14),
     requirements: "",
   },
   {
@@ -137,7 +142,7 @@ export const creatorDeals: DealType[] = [
     twitterHandle: "twitteraccount",
     paymentPerThousand: 10,
     maxPayment: 1000,
-    deadline: new Date(),
+    deadline: getDate(50),
     requirements: "",
   },
 ];

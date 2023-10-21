@@ -19,7 +19,7 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const creatorAction = getActionTitleByStatus(false, deal?.status || "");
+  const creatorAction = getActionTitleByStatus(false, deal?.status || "", sismoProof);
 
   // ADD: Based on the action, add a function to perform upon clicking the action button
   const getCreatorsActionCallback = (action: string) => {
@@ -37,10 +37,12 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
 
           if (sismoProof) {
             setOpenRedeemModal(!openRedeemModal);
-          } else {
-            // ADD: Redirect to Sismo and do your thing
-            notification.info("Verify Twitter");
           }
+        };
+      case ActionType.VERIFYTWITTER:
+        return function () {
+          // ADD: Redirect to Sismo and do your thing
+          notification.info("Verify Twitter action");
         };
       case ActionType.VIEWTWEET:
         return function () {

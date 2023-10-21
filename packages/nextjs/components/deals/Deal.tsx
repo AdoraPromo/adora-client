@@ -23,7 +23,7 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
           <b>Deal ID:</b>
           <span>{`${deal.id.slice(0, 8)}...${deal.id.slice(-6)}`}</span>
         </div>
-        <div className="flex flex-row gap-3 w-52">
+        <div className="flex flex-row gap-3 w-60">
           <div className="flex flex-row w-3/5 gap-1 items-center justify-start">
             <Image src="/assets/hourglass.svg" alt="hourglass" height={18} width={12} />
             {getRemainingTime(deal.deadline)}
@@ -39,14 +39,6 @@ export const Deal = ({ deal, open, setOpen }: DealProps) => {
 function getRemainingTime(deadline: Date): string {
   const diff = (deadline.getTime() - Date.now()) / 1000 / 60; // Difference in minutes
 
-  // console.log("~~~~~~~~");
-  // console.log(deadline);
-  // console.log(new Date(Date.now()));
-  // console.log(deadline.getTime());
-  // console.log(Date.now());
-  // console.log(diff);
-  // console.log("~~~~~~~~");
-
   if (diff < 0) {
     return "Expired";
   } else if (diff < 60) {
@@ -54,7 +46,7 @@ function getRemainingTime(deadline: Date): string {
     return `${diff.toFixed(0)} minutes left`;
   } else if (diff < 24 * 60) {
     // < 1 day
-    return `${(diff / 24).toFixed(0)} hours left`;
+    return `${(diff / 60).toFixed(0)} hours left`;
   } else if (diff >= 24 * 60) {
     return `${(diff / 24 / 60).toFixed(0)} days left`;
   }
