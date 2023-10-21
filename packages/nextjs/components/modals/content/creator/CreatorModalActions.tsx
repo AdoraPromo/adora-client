@@ -132,7 +132,21 @@ const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
   await acceptTx.wait();
   notification.remove(acceptConfirmationNote);
   const clfNote = notification.loading(`⏳ Waiting for Chainlink\n Functions response...`);
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
+    for (let i = 0; i < 10; i++) {
+      // sleep for 10 seconds
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      const fetchedDealStruct = await marketplaceContract.getDeal(id);
+      console.log({ fetchedDealStruct });
+      if (fetchedDealStruct.status === 1) {
+        notification.remove(clfNote);
+        notification.success(`Deal ${id} accepted!`);
+        resolve(id);
+        marketplaceContract.removeAllListeners();
+        return;
+      }
+    }
+    throw Error("Could not detect deal acceptance within last 100 seconds");
     marketplaceContract.on("DealAccepted", (dealId: string) => {
       notification.remove(clfNote);
       notification.success(`Deal ${dealId} accepted!`);
