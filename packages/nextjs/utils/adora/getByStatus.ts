@@ -1,4 +1,5 @@
 import { ActionType, DealStatus } from "./enums";
+import { SismoConnectResponse } from "@sismo-core/sismo-connect-react";
 
 // Colors
 export const getCustomColorByStatus = (property: string, status: string): string => {
@@ -27,7 +28,11 @@ export const getColorByStatus = (status: string): string => {
 };
 
 // Actions
-export const getActionTitleByStatus = (isSponsor: boolean, status: string, sismoProof?: any): ActionType | "" => {
+export const getActionTitleByStatus = (
+  isSponsor: boolean,
+  status: string,
+  sismoProof?: SismoConnectResponse | null,
+): ActionType | "" => {
   if (isSponsor) {
     switch (status) {
       case DealStatus.REDEEMED:
@@ -41,9 +46,9 @@ export const getActionTitleByStatus = (isSponsor: boolean, status: string, sismo
   } else {
     switch (status) {
       case DealStatus.ACCEPTED:
-        return sismoProof ? ActionType.REDEEM : ActionType.VERIFYTWITTER;
+        return ActionType.REDEEM;
       case DealStatus.PENDING:
-        return ActionType.ACCEPT;
+        return sismoProof ? ActionType.ACCEPT : ActionType.VERIFYTWITTER;
       case DealStatus.REDEEMED:
         return ActionType.VIEWTWEET;
       default:

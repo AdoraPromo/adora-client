@@ -140,7 +140,12 @@ const ProgressModal = ({ open, setOpen }: ProgressModalProps) => {
   }, [activeStep, router, pathname]);
 
   return (
-    <Modal open={open} setOpen={setOpen} footerActions={<DealActions onClose={() => setOpen(false)} />} width="2/5">
+    <Modal
+      open={open}
+      onClose={() => setOpen(false)}
+      footerActions={<DealActions onClose={() => setOpen(false)} />}
+      width="2/5"
+    >
       <>
         <div className="flex flex-col text-neutral w-full items-center justify-center transition ease-in-out duration-300">
           <Stepper activeStep={activeStep} connectorStyleConfig={_connectorStyleConfig} className="w-full">

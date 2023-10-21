@@ -1,77 +1,87 @@
-import React, { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Modal from "./Modal";
 import CreatorModalActions from "./content/creator/CreatorModalActions";
 import CreatorModalBody from "./content/creator/CreatorModalBody";
 import SponsorModalActions from "./content/sponsor/SponsorModalActions";
 import SponsorModalBody from "./content/sponsor/SponsorModalBody";
+import { SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
+import { fetchEncryptedDeal } from "~~/utils/adora/fetchEncryptedDeal";
+import { notification } from "~~/utils/scaffold-eth";
 
-const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealType }) => {
+const ViewDealModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-
+  const [deal, setDeal] = useState<DealType>();
   const { address, setSismoProof } = useGlobalState();
-  const [open, setOpen] = useState(false);
-  // Set initial state to be the encrypted deal
-  const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
 
-  const setOpenWithQueryParams = (open: boolean) => {
-    if (!deal) return;
+  const getEncryptedDeal = (dealId: string) => {
+    fetchEncryptedDeal(dealId, current.get("key"))
+      .then((decryptedFetchedDeal: DealType | undefined) => {
+        console.log(decryptedFetchedDeal);
+        setDeal(decryptedFetchedDeal);
+      })
+      .catch(() => {
+        notification.error("Deal with ID '" + dealId + "' does not exist!");
+        return;
+      });
+  };
 
-    setOpen(open);
-    if (open) {
-      // TODO: Handle missing ID error
-      deal.id && current.set("id", deal.id);
-    } else {
-      current.delete("id");
+  useEffect(() => {
+    const dealId = current.get("id");
+    if (dealId) {
+      getEncryptedDeal(dealId);
     }
+  }, [searchParams]); // eslint-disable-line
 
+  // Set initial state to be the encrypted deal
+  const config: SismoConnectConfig = {
+    appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
+  };
+  const { sismoConnect } = useSismoConnect({ config });
+  useEffect(() => {
+    const sismoConnectResponse = current.get("sismoConnectResponseCompressed");
+
+    const tempVar = window.location.href.split("?");
+
+    if (sismoConnectResponse || (tempVar.length > 1 && tempVar[1].startsWith("sismo"))) {
+      const response: SismoConnectResponse | null = sismoConnect.getResponse();
+      if (response) {
+        setSismoProof(response);
+        const url = localStorage.getItem("redirectUrl");
+        router.push(url ?? "/");
+      }
+    }
+  }, [searchParams]); // eslint-disable-line
+
+  const isSponsor = deal?.sponsor === address;
+
+  const onClose = () => {
+    setDeal(undefined);
+    current.delete("id");
+    current.delete("key");
     const query = current.toString() ? `?${current.toString()}` : "";
     router.push(`${pathname}${query}`);
   };
 
-  useEffect(() => {
-    if (open && deal) {
-      // ADD: Do the deal decryption here
-      const _decryptedDeal: DealType = { ...deal, requirements: "i've decrypted this deal" };
-      setDecryptedDeal(_decryptedDeal);
-    }
-  }, [open, deal]);
-
-  useEffect(() => {
-    // If modal isn't open and we have the required deal, open modal
-    if (!open && deal && current.get("id") === deal.id) {
-      setOpenWithQueryParams(true);
-    }
-
-    if (current.get("sismoProof")) {
-      // ADD: Do something with the Sismo proof
-      setSismoProof(current.get("sismoProof") || "");
-    }
-  }, [searchParams]); // eslint-disable-line
-
-  const isSponsor = deal && deal.sponsor === address;
-
   return (
     <Modal
-      openTrigger={<>{React.cloneElement(children, { open, setOpen: setOpenWithQueryParams })}</>}
       title={"View Deal"}
-      open={open}
-      setOpen={setOpenWithQueryParams}
+      open={!!deal}
+      onClose={onClose}
       footerActions={
-        !deal ? null : isSponsor ? (
-          <SponsorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
+        !deal && !deal ? null : isSponsor ? (
+          <SponsorModalActions deal={deal} onClose={onClose} />
         ) : (
-          <CreatorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
+          <CreatorModalActions deal={deal} onClose={onClose} />
         )
       }
     >
-      {!deal ? null : isSponsor ? <SponsorModalBody deal={decryptedDeal} /> : <CreatorModalBody deal={decryptedDeal} />}
+      {!deal && !deal ? null : isSponsor ? <SponsorModalBody deal={deal} /> : <CreatorModalBody deal={deal} />}
     </Modal>
   );
 };

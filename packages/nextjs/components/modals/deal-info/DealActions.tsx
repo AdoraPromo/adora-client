@@ -36,6 +36,9 @@ const DealActions = ({ deal, onClose, actionTitle, onAction, openRedeemModal }: 
       )}
       {actionTitle && (
         <>
+          {/* {actionTitle === ActionType.ACCEPT ? (
+            <SismoButton deal={deal} onAction={onAction} />
+          ) : ( */}
           <Button
             classes={{
               width: "auto",

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import Modal from "./Modal";
 import DealActions from "./deal-info/DealActions";
 import { useGlobalState } from "~~/services/store/store";
@@ -16,11 +15,8 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
   const [linkCopied, setLinkCopied] = useState(false);
   const globalState = useGlobalState();
 
-  const pathname = usePathname();
-
-  // ADD: Get the ID of the deal so that the link can be copied
   const copyLinkToClipboard = () => {
-    const copyUrl = `${getBaseUrl()}${pathname}?id=${globalState.dealId}&key=${globalState.symmetricKey}`;
+    const copyUrl = `${getBaseUrl()}/incoming?id=${globalState.dealId}&key=${globalState.symmetricKey}`;
     navigator.clipboard.writeText(copyUrl);
 
     setLinkCopied(true);
@@ -31,7 +27,7 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
   return (
     <Modal
       open={open}
-      setOpen={setOpen}
+      onClose={() => setOpen(false)}
       footerActions={
         <DealActions
           onClose={() => setOpen(false)}
@@ -39,15 +35,13 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
           onAction={() => copyLinkToClipboard()}
         />
       }
-      width="1/2"
+      width="2/5"
     >
       <>
-        <div className="flex flex-col text-neutral w-full items-center justify-center gap">
+        <div className="flex flex-col text-neutral w-full items-center justify-center">
           <div className="text-2xl">Your Deal has been</div>
-          <div className="text-4xl font-bold">successfully created!</div>
-          <div className="p-6 pb-2">
-            <Image src={"/assets/success.svg"} alt="deal-sent-icon" width={400} height={400} />
-          </div>
+          <div className="text-4xl font-bold mb-5">successfully created!</div>
+          <Image src={"/assets/success.svg"} alt="deal-sent-icon" width={150} height={150} />
         </div>
       </>
     </Modal>
