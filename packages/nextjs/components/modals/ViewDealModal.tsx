@@ -9,7 +9,6 @@ import { SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sism
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { fetchEncryptedDeal } from "~~/utils/adora/fetchEncryptedDeal";
-import { creatorDeals } from "~~/utils/adora/mocks/data";
 import { notification } from "~~/utils/scaffold-eth";
 
 const ViewDealModal = () => {
@@ -23,9 +22,7 @@ const ViewDealModal = () => {
   const getEncryptedDeal = (dealId: string) => {
     fetchEncryptedDeal(dealId, current.get("key"))
       .then((decryptedFetchedDeal: DealType | undefined) => {
-        console.log(decryptedFetchedDeal);
-        // ADD: swap for setViewDeal(decryptedFetchedDeal); once the key fetching logic is done
-        setDeal(creatorDeals[0]);
+        setDeal(decryptedFetchedDeal);
       })
       .catch(() => {
         notification.error("Deal with ID '" + dealId + "' does not exist!");

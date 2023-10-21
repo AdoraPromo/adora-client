@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
@@ -25,8 +25,6 @@ const Incoming: NextPage = () => {
 
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const { address } = useGlobalState();
 
   useEffect(() => {
@@ -57,15 +55,11 @@ const Incoming: NextPage = () => {
       return;
     }
 
-    // Get ID from the URL
-    const dealId = getDealIdFromQueryParams(viewDealUrl);
+    // Get query params (including the ID) from the URL
+    const params = getQueryParams(viewDealUrl);
 
-    // ADD: Add deal lookup logic.
-    // Note: user could also input a link to the deal that's not present in the `allDeals` state variable.
-    // If ID exists, move on
-    if (dealId) {
-      current.set("id", dealId);
-      router.push(`${pathname}?${current.toString()}`);
+    if (params) {
+      router.push(`${pathname}?${params.toString()}`);
     }
   };
 
@@ -126,14 +120,11 @@ const Incoming: NextPage = () => {
   );
 };
 
-const getDealIdFromQueryParams = (url: string): string => {
+const getQueryParams = (url: string): URLSearchParams | "" => {
   const urlParts = url.split("?"); // Extract path + query params
 
-  if (urlParts.length >= 2) {
-    const dealIdParts = urlParts[1].split("="); // Get first query param
-    if (dealIdParts.length >= 2) {
-      return dealIdParts[1]; // Get ID
-    }
+  if (urlParts.length >= 2 && urlParts[1].includes("id=")) {
+    return new URLSearchParams(urlParts[1]);
   } else {
     notification.error("Invalid deal URL.");
   }
