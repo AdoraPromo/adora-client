@@ -27,7 +27,7 @@ const DealSentModal = ({ open, setOpen }: DealSentModalProps) => {
   return (
     <Modal
       open={open}
-      setOpen={setOpen}
+      onClose={() => setOpen(false)}
       footerActions={
         <DealActions
           onClose={() => setOpen(false)}

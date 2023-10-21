@@ -20,7 +20,6 @@ const Incoming: NextPage = () => {
   // TODO: Sort deals by expiration date
   const [viewDealUrl, setViewDealUrl] = useState("");
   const [status, setStatus] = useState("");
-  const [viewDeal, setViewDeal] = useState<DealType>();
   const [allDeals, setAllDeals] = useState<DealType[]>([]);
   const [filteredDeals, setFilteredDeals] = useState<DealType[]>([]);
 
@@ -65,17 +64,6 @@ const Incoming: NextPage = () => {
     // Note: user could also input a link to the deal that's not present in the `allDeals` state variable.
     // If ID exists, move on
     if (dealId) {
-      const _dealCheck = allDeals.find(d => d.id === dealId);
-
-      // Deal could not be found
-      if (!_dealCheck) {
-        notification.error("Deal with ID '" + dealId + "' does not exist!");
-        return;
-      } else {
-        // Deal is found
-        setViewDeal(_dealCheck);
-      }
-
       current.set("id", dealId);
       router.push(`${pathname}?${current.toString()}`);
     }
@@ -83,6 +71,7 @@ const Incoming: NextPage = () => {
 
   return (
     <>
+      <ViewDealModal />
       <MetaHeader title="Incoming Deals - Adora.Promo" />
       <div
         style={{ backgroundImage: `url('/assets/background-minimal.svg')` }}
@@ -107,9 +96,6 @@ const Incoming: NextPage = () => {
                 hover: "transition hover:border-2 hover:border-accent-content duration-300",
               }}
             />
-            <ViewDealModal deal={viewDeal}>
-              <></>
-            </ViewDealModal>
             <Button
               classes={{
                 width: "auto",
