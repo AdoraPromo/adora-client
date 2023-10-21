@@ -148,22 +148,15 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
 
     const apecoinContract = new ethers.Contract(apecoinAddress, ApeCoinABI, signer);
     const allowanceApprovalNote = notification.loading(`Please approve the increase\nallowance transaction. 👌`);
+    console.log({ marketplaceAddress, maxPayment });
     const approveTx = await apecoinContract.increaseAllowance(marketplaceAddress, maxPayment);
     notification.remove(allowanceApprovalNote);
     const allowanceConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
     await approveTx.wait();
     notification.remove(allowanceConfirmationNote);
-
+    console.log(`Allowance increased successfully!`);
     const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
     const creationApprovalNote = notification.loading(`Please approve the\ncreate deal transaction. 👌`);
-    const createTx = await marketplaceContract.createDeal(
-      termsHash,
-      encryptedSymKeyBase64,
-      encryptedTerms,
-      maxPayment,
-      redemptionExpiration,
-      sponsorEncryptedSymmetricKey,
-    );
     console.log({
       termsHash,
       encryptedSymKeyBase64,
@@ -172,6 +165,14 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
       redemptionExpiration,
       sponsorEncryptedSymmetricKey,
     });
+    const createTx = await marketplaceContract.createDeal(
+      termsHash,
+      encryptedSymKeyBase64,
+      encryptedTerms,
+      maxPayment,
+      redemptionExpiration,
+      sponsorEncryptedSymmetricKey,
+    );
     notification.remove(creationApprovalNote);
     const creationConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
     const createTxReceipt = await createTx.wait();

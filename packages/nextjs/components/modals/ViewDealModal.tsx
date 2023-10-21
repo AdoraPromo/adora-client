@@ -27,9 +27,13 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const [decryptedDeal, setDecryptedDeal] = useState<DealType | undefined>(deal);
   const [open, setOpen] = useState(false);
-  const { address, setSismoProof, sismoProof } = useGlobalState();
+  const { address, setSismoProof } = useGlobalState();
+  const [isDecryptedDealLoaded, setIsDecryptedDealLoaded] = useState(false);
 
   useEffect(() => {
+    if (isDecryptedDealLoaded) {
+      return;
+    }
     (async () => {
       if (!open) return;
       const dealId = current.get("id");
@@ -83,6 +87,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
           };
           console.log({ decryptedFetchedDeal });
           setDecryptedDeal(decryptedFetchedDeal);
+          setIsDecryptedDealLoaded(true);
         }
       } else {
         // TODO Decrypt the deal using Lit Protocol and call setDecryptedDeal
@@ -152,11 +157,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
         !deal && !decryptedDeal ? null : isSponsor ? (
           <SponsorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         ) : (
-          <CreatorModalActions
-            deal={decryptedDeal}
-            sismoProof={sismoProof}
-            onClose={() => setOpenWithQueryParams(false)}
-          />
+          <CreatorModalActions deal={decryptedDeal} onClose={() => setOpenWithQueryParams(false)} />
         )
       }
     >

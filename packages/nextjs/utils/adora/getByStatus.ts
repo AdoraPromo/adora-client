@@ -1,4 +1,5 @@
 import { ActionType, DealStatus } from "./enums";
+import { SismoConnectResponse } from "@sismo-core/sismo-connect-react";
 
 // Colors
 export const getCustomColorByStatus = (property: string, status: string): string => {
@@ -27,7 +28,11 @@ export const getColorByStatus = (status: string): string => {
 };
 
 // Actions
-export const getActionTitleByStatus = (isSponsor: boolean, status: string, sismoProof?: any): ActionType | "" => {
+export const getActionTitleByStatus = (
+  isSponsor: boolean,
+  status: string,
+  sismoProof?: SismoConnectResponse | null,
+): ActionType | "" => {
   if (isSponsor) {
     switch (status) {
       case DealStatus.REDEEMED:

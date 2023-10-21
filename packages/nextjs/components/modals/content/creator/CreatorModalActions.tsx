@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import DealActions from "../../deal-info/DealActions";
-import { AuthType, SismoConnectConfig, SismoConnectResponse, useSismoConnect } from "@sismo-core/sismo-connect-react";
+import { AuthType, SismoConnectConfig, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { ethers, utils } from "ethers";
 import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
+import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
 import { ActionType } from "~~/utils/adora/enums";
 import { getActionTitleByStatus } from "~~/utils/adora/getByStatus";
@@ -13,17 +14,17 @@ import { notification } from "~~/utils/scaffold-eth";
 
 interface CreatorModalActionsProps {
   deal: DealType | undefined;
-  sismoProof: SismoConnectResponse | null;
   onClose: () => void;
 }
 
-const CreatorModalActions = ({ deal, sismoProof, onClose }: CreatorModalActionsProps) => {
+const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
   const [openRedeemModal, setOpenRedeemModal] = useState(false);
+  const { sismoProof } = useGlobalState();
 
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const creatorAction = getActionTitleByStatus(false, deal?.status || "");
+  const creatorAction = getActionTitleByStatus(false, deal?.status || "", sismoProof);
   const config: SismoConnectConfig = {
     appId: process.env.NEXT_PUBLIC_SISMO_APP_ID ?? "",
   };
