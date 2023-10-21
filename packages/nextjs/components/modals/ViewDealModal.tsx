@@ -21,6 +21,7 @@ const fromBase64 = (str: string) =>
   );
 
 const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealType }) => {
+  deal = undefined;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -32,6 +33,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
 
   // TODO: Leave comments and remove console.log()
   const fetchEncryptedDeal = async () => {
+    console.log("fetchEncryptedDeal is running");
     if (!open) return;
 
     const dealId = current.get("id");
@@ -54,10 +56,13 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
           false,
           ["decrypt"],
         );
+        console.log("Sym Key Hex");
+        console.log(symKeyHex);
         const encryptedOfferTermsUint8Array = fromBase64(fetchedDealStruct.encryptedTerms);
         console.log("Encrypted");
         console.log(encryptedOfferTermsUint8Array);
         const recoveredIv = encryptedOfferTermsUint8Array.slice(0, 16).buffer;
+        console.log("Recovered IV");
         console.log(recoveredIv);
         const encryptedZipArrayBuffer = encryptedOfferTermsUint8Array.slice(16).buffer;
         const offerTermsArrayBuffer = await crypto.subtle.decrypt(
@@ -68,7 +73,10 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
           symKey,
           encryptedZipArrayBuffer,
         );
+        console.log("After decrypt");
+        console.log(offerTermsArrayBuffer);
         const offerTermsString = new TextDecoder().decode(offerTermsArrayBuffer);
+        console.log("After decode");
         const offerTerms = JSON.parse(offerTermsString);
         console.log("Decrypted");
         console.log(offerTermsString);
@@ -98,7 +106,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
     }
 
     // TODO: Test this out - only if we open modal for the deal that's in the URL, fetch it
-    if (current.get("id") === deal?.id) {
+    if (current.get("id")) {
       fetchEncryptedDeal().catch(err => console.error(err));
     }
 
@@ -155,7 +163,7 @@ const ViewDealModal = ({ children, deal }: { children: JSX.Element; deal?: DealT
     }
   }, [searchParams]); // eslint-disable-line
 
-  const isSponsor = deal && deal.sponsor === address;
+  const isSponsor = deal && (deal as any).sponsor === address;
 
   return (
     <Modal

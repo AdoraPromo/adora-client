@@ -152,7 +152,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     const approveTx = await apecoinContract.increaseAllowance(marketplaceAddress, maxPayment);
     notification.remove(allowanceApprovalNote);
     const allowanceConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
-    await approveTx.wait();
+    await approveTx.wait(5);
     notification.remove(allowanceConfirmationNote);
     console.log(`Allowance increased successfully!`);
     const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
@@ -172,6 +172,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
       maxPayment,
       redemptionExpiration,
       sponsorEncryptedSymmetricKey,
+      { gasLimit: 5000000 },
     );
     notification.remove(creationApprovalNote);
     const creationConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
@@ -180,6 +181,8 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     notification.remove(creationConfirmationNote);
     const dealId = createTxReceipt.events[1].data;
     setDealId(dealId);
+    console.log("DEAL ID", dealId);
+    console.log("SYM KEY HEX", Buffer.from(exportedSymKeyBase64, "base64").toString("hex"));
     notification.success(`Offer ${dealId} created!`);
 
     // Decrypting is demonstrated here.  This code will be cut and pasted elsewhere when we need to decrypt.

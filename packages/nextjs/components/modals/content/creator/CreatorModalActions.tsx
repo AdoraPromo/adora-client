@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import DealActions from "../../deal-info/DealActions";
 import { AuthType, SismoConnectConfig, useSismoConnect } from "@sismo-core/sismo-connect-react";
 import { ethers, utils } from "ethers";
 import { SponsorshipMarketplaceABI, marketplaceAddress } from "~~/contracts";
 import { useGlobalState } from "~~/services/store/store";
 import { DealType } from "~~/types/deal";
+import { getBaseUrl } from "~~/utils/adora/baseUrl";
 import { ActionType } from "~~/utils/adora/enums";
 import { getActionTitleByStatus } from "~~/utils/adora/getByStatus";
 import { notification } from "~~/utils/scaffold-eth";
@@ -23,6 +24,10 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
 
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const pathName = usePathname();
+  const currentFullUrl = `${getBaseUrl()}${pathName}?${current.toString()}`;
+  console.log("Current full URL");
+  console.log(currentFullUrl);
 
   const creatorAction = getActionTitleByStatus(false, deal?.status || "", sismoProof);
   const config: SismoConnectConfig = {
@@ -35,10 +40,14 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
     switch (action) {
       case ActionType.ACCEPT:
         return function () {
+          console.log("SISMO PROOF OBJ");
+          console.log(sismoProof);
           // TODO: Fix this as it requires the user to click the "Accept" button twice.
           // On the first click, they are redirected to Sismo to get the proof, then on the second click they actually accept the deal.
           if (!sismoProof) {
-            localStorage.setItem("redirectUrl", window.location.href);
+            console.log("Current URL to redirect back to");
+            console.log(currentFullUrl);
+            localStorage.setItem("redirectUrl", currentFullUrl);
             sismoConnect.request({
               auths: [
                 {
