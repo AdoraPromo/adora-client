@@ -18,7 +18,7 @@
     "@ethersproject/providers": "^5.7.2",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.11",
-    "@lit-protocol/lit-node-client": "2.2.5",
+    "@lit-protocol/lit-node-client": "^2.2.55",
     "@metamask/eth-sig-util": "^7.0.0",
     "@rainbow-me/rainbowkit": "1.0.8",
     "@sismo-core/sismo-connect-react": "^0.0.23",
