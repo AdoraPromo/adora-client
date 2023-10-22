@@ -45,12 +45,11 @@ const ViewDealModal = () => {
   const { sismoConnect } = useSismoConnect({ config });
   useEffect(() => {
     const sismoConnectResponse = current.get("sismoConnectResponseCompressed");
-
-    const tempVar = window.location.href.split("?");
-
-    if (sismoConnectResponse || (tempVar.length > 1 && tempVar[1].startsWith("sismo"))) {
-      const response: SismoConnectResponse | null = sismoConnect.getResponse();
+    console.log("sismoConnectResponse in ViewDealModal", sismoConnectResponse);
+    if (sismoConnectResponse || window.location.href.includes("sismo")) {
+      const response: SismoConnectResponse | null = sismoConnect?.getResponse();
       if (response) {
+        console.log("Calling setSismoProof in ViewDealModal with response: ", JSON.stringify(response));
         setSismoProof(response);
         const url = localStorage.getItem("redirectUrl");
         router.push(url ?? "/");
