@@ -15,7 +15,7 @@ const AdoraApp = ({ Component, pageProps }: AppProps) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("lit-web3-provider", "metamask");
   }
-
+  
   return (
     <WagmiConfig config={wagmiConfig}>
       <NextNProgress />
