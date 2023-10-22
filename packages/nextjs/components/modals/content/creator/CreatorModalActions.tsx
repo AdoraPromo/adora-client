@@ -22,6 +22,7 @@ interface CreatorModalActionsProps {
 const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
   const [openRedeemModal, setOpenRedeemModal] = useState(false);
   const { sismoProof } = useGlobalState();
+  console.log("sismoProof from global state in CreatorModalActions", sismoProof);
 
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -49,6 +50,7 @@ const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
       case ActionType.VERIFYTWITTER:
         return function () {
           localStorage.setItem("redirectUrl", currentFullUrl);
+          console.log("Sending request to sismoConnect with redirectUrl", currentFullUrl);
           sismoConnect.request({
             auths: [
               {
@@ -177,9 +179,18 @@ const acceptDealOnChain = async (id: string, key: string, simoProof: any) => {
     for (let i = 0; i < 10; i++) {
       // sleep for 10 seconds
       await new Promise(resolve => setTimeout(resolve, 10000));
-      const fetchedDealStruct = await marketplaceContract.getDeal(id);
+      // If the first call to getDeal fails, try 3 more times
+      let fetchedDealStruct;
+      for (let i = 0; i < 3; i++) {
+        try {
+          fetchedDealStruct = await marketplaceContract.getDeal(id);
+          break;
+        } catch (e) {
+          console.log(e);
+        }
+      }
       console.log({ fetchedDealStruct });
-      if (fetchedDealStruct.status === 1) {
+      if (fetchedDealStruct?.status === 1) {
         notification.remove(clfNote);
         notification.success(`Deal ${id} accepted!`, { duration: 10000 });
         resolve(id);
