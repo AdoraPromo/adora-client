@@ -51,6 +51,7 @@ const ViewDealModal = () => {
       if (response) {
         console.log("Calling setSismoProof in ViewDealModal with response: ", JSON.stringify(response));
         setSismoProof(response);
+        localStorage.setItem("sismoProof", JSON.stringify(response));
         const url = localStorage.getItem("redirectUrl");
         router.push(url ?? "/");
       }

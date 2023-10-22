@@ -152,7 +152,7 @@ export function CreateDealModal({ onSuccess, deal, setDeal }: CreateDealModalPro
     const approveTx = await apecoinContract.increaseAllowance(marketplaceAddress, maxPayment);
     notification.remove(allowanceApprovalNote);
     const allowanceConfirmationNote = notification.loading(`⏳ Waiting for transaction\nconfirmation...`);
-    await approveTx.wait(5);
+    await approveTx.wait(2);
     notification.remove(allowanceConfirmationNote);
     console.log(`Allowance increased successfully!`);
     const marketplaceContract = new ethers.Contract(marketplaceAddress, SponsorshipMarketplaceABI, signer);
