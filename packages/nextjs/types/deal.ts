@@ -27,9 +27,10 @@ export interface DatabaseDealType {
   encrypted_tweet_id: string;
 }
 
-export const dealStatus = (deal: DatabaseDealType): string => {
-  if (deal.redemption_expiration * 1000 < new Date().getTime()) return "Expired";
-  if (deal.status == "New") return "Pending";
+export const dealStatus = (deal: DatabaseDealType): DealStatus | string => {
+  if (deal.status === "Withdrawn") return DealStatus.WITHDRAWN;
+  if (deal.redemption_expiration * 1000 < new Date().getTime()) return DealStatus.EXPIRED;
+  if (deal.status == "New") return DealStatus.PENDING;
 
   return deal.status;
 };
