@@ -21,7 +21,13 @@ interface CreatorModalActionsProps {
 
 const CreatorModalActions = ({ deal, onClose }: CreatorModalActionsProps) => {
   const [openRedeemModal, setOpenRedeemModal] = useState(false);
-  const { sismoProof } = useGlobalState();
+  let { sismoProof } = useGlobalState();
+  if (!sismoProof) {
+    if (localStorage.getItem("sismoProof")) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      sismoProof = JSON.parse(localStorage.getItem("sismoProof")!);
+    }
+  }
   console.log("sismoProof from global state in CreatorModalActions", sismoProof);
 
   const searchParams = useSearchParams();
